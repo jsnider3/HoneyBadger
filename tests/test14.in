@@ -1,0 +1,6 @@
+{
+  fib = fun x : Int (if x < 1 
+    then 1 
+    else x * fib(x - 1));
+  fib(5)
+}
