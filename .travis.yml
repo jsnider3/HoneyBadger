@@ -10,6 +10,6 @@ install:
       ocaml-native-compilers menhir
   - opam init -n
   - eval `opam config env`
-  - opam install batteries core -y
+  - opam install core -y
 # command to run tests
-script: mk
+script: make
