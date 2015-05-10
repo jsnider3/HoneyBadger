@@ -42,7 +42,7 @@ exp:
     { Str s }
 | PRINT LPAREN e = exp RPAREN
     { Print e }
-| READLINE LPAREN RPAREN
+| READLINE
     { printf "Readline 46\n"; Readline }
 | v = VAR ASSIGN e = exp
     { Set(v, e) }

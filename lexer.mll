@@ -31,7 +31,7 @@ rule token = parse
     {FUNC}
 | "print"
     { PRINT }
-| "readline"
+| "readline" ' '*'('' '*')'
     { printf "Readline 33\n"; READLINE }
 | "=="
     {EQUAL}

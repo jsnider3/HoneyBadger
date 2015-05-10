@@ -241,7 +241,6 @@ let rec eval expr state = match expr with
   |Bottom -> raise (Failure "Attempt to eval Bottom")
   |Print e -> printf "%s\n" (string_of_val (eval e state)); VUnit
   |Readline -> VStr (input_line stdin)
-  |e -> invalid_arg (string_of_expr e ^ " is not a valid expression.")
 
 (*
   exec :: expr         -> Val
@@ -251,26 +250,24 @@ let rec eval expr state = match expr with
 let exec a =
   eval a (Hashtbl.create ~hashable:String.hashable ())
 
-let rec read_all ic =
-  try
-    let ln = input_line ic in
-      ln ^ read_all ic
-  with End_of_file -> "";;
-
 (*
   Main
   Read stdin until eof, parse that as an expr,
   and print what it evaluates to.
 *)
-let () =
-  let linebuf = Lexing.from_string (read_all stdin) in
+let main () =
+  let inpt = open_in (Sys.argv.(1)) in
+  let linebuf = Lexing.from_channel inpt in
   try
     let ast = (Parser.main Lexer.token linebuf) in
       printf "%s\n" (string_of_expr ast);
       printf "%s\n" (string_of_val (exec ast));
+      In_channel.close inpt;
   with
   | Lexer.Error msg ->
 	  fprintf stderr "%s%!" msg
   | Parser.Error ->
-	  fprintf stderr "Syntax error at offset %d.\n%!" (Lexing.lexeme_start linebuf)
+	  fprintf stderr "Syntax error at offset %d.\n%!"
+        (Lexing.lexeme_start linebuf);;
 
+main ()
