@@ -8,7 +8,7 @@ OUTDIR = "tests/output/"
 class Tests(unittest.TestCase):
 
   def run_HB(self, fname):
-    return os.popen("HB " + fname).readlines()    
+    return os.popen("./HB " + fname).readlines()    
 
   def cat(self, fname):
     f = open(fname)
