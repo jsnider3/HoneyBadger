@@ -43,7 +43,7 @@ exp:
 | PRINT LPAREN e = exp RPAREN
     { Print e }
 | READLINE
-    { printf "Readline 46\n"; Readline }
+    { Readline }
 | v = VAR ASSIGN e = exp
     { Set(v, e) }
 | v = VAR LBRACK f = STRING RBRACK ASSIGN e = exp
@@ -69,7 +69,7 @@ exp:
 | LPAREN e = exp RPAREN
     { e }
 | LPAREN RPAREN
-    { printf "Unit 70\n";Unit }
+    { Unit }
 | LBRACK RBRACK
     { List [] }
 | e1 = exp PLUS e2 = exp

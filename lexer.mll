@@ -32,7 +32,7 @@ rule token = parse
 | "print"
     { PRINT }
 | "readline" ' '*'('' '*')'
-    { printf "Readline 33\n"; READLINE }
+    { READLINE }
 | "=="
     {EQUAL}
 | "!="
@@ -60,7 +60,7 @@ rule token = parse
 | ['a'-'z']+ as v
     { VAR v }
 | '"' [^'"']* '"' as s
-    { STRING s }
+    { STRING (String.sub s 1 (String.length s - 2)) }
 | "Int"
     {INT_T}
 | "String"
@@ -84,9 +84,9 @@ rule token = parse
 | '*'
     { TIMES }
 | '('
-    { printf "(\n"; LPAREN }
+    { LPAREN }
 | ')'
-    { printf ")\n"; RPAREN }
+    { RPAREN }
 | '{'
     { LCURL }
 | '}'

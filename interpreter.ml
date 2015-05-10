@@ -125,20 +125,20 @@ let cast_int v = match v with
   VN num -> VN num
   |VF num -> VN (Float.to_int num)
   |VStr s -> VN (Int.of_string s)
-  |_ -> raise (Failure ("Can't cast " ^ string_of_val v ^ " to int."))
+  |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to int.")
 
 let cast_real v = match v with
   VN num -> VF (Float.of_int num)
   |VF num -> VF num
   |VStr s -> VF (Float.of_string s)
-  |_ -> raise (Failure ("Can't cast " ^ string_of_val v ^ " to real."))
+  |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to real.")
 
 let cast_string v = match v with
   VN num -> VStr (Int.to_string num)
   |VB num -> VStr (Bool.to_string num)
   |VF num -> VStr (Float.to_string num)
   |VStr s -> VStr s
-  |_ -> raise (Failure ("Can't cast " ^ string_of_val v ^ " to string."))
+  |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to string.")
 
 (*
   cast ::value -> type -> value
@@ -271,8 +271,8 @@ let rec eval expr state = match expr with
     in
       eval_loop ()
   |Top -> VTop
-  |Bottom -> raise (Failure "Attempt to eval Bottom")
-  |Print e -> printf "%s\n" (string_of_val (eval e state)); VUnit
+  |Bottom -> invalid_arg "Attempt to eval Bottom"
+  |Print e -> print_endline (string_of_val (eval e state)); VUnit
   |Readline -> VStr (input_line stdin)
 
 (*
