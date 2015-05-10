@@ -5,8 +5,8 @@ type kind = TInt | TReal | TBool | TFunc of (kind * kind)
 type expr = N of int | F of float| Add of (expr * expr) | Mul of (expr * expr) 
   | Sub of (expr * expr) | Less of (expr * expr) |And of (expr * expr) 
   | Or of (expr * expr) | Not of expr |If of (expr * expr * expr) 
-  | Equal of (expr * expr) | B of bool |Lam of (kind * string * expr) 
-  | App of (expr * expr) | List of expr list | Unit
+  | Equal of (expr * expr) | B of bool |Lam of (string list * expr) 
+  | App of (expr * expr list) | List of expr list | Unit
   | Get of (expr * expr) | Record of (string * expr) list 
   | GetRec of (string * expr) | SetRec of string * string * expr
   | SetInd of (string * expr * expr) 
@@ -16,7 +16,7 @@ type expr = N of int | F of float| Add of (expr * expr) | Mul of (expr * expr)
   | While of (expr * expr) | Top | Bottom
 
 type value = VB of bool | VList of value list | VUnit | VN of int 
-  | VF of float | VLam of (kind * string * expr) | VStr of string 
+  | VF of float | VLam of (string list * expr) | VStr of string 
   | VRecord of (string * value) list | VTop | VBottom
 
 type env_type = (string, value) Hashtbl.t;;

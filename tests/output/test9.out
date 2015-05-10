@@ -1,1 +1,1 @@
-VLam(Int, x, Lookup x)
+VLam(x, Lookup x)

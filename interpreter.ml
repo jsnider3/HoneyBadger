@@ -32,9 +32,10 @@ let rec string_of_expr arg = match arg with
   |If (a, b, c)-> "(If " ^ string_of_expr a ^ " then " ^ string_of_expr b ^
                        " else " ^ string_of_expr c ^ ")"
   |Equal (a, b) -> "Equal(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |Lam (a, b, c) -> "Lam(" ^ string_of_kind a ^ ", " ^ b ^ ", " ^
+  |Lam (b, c) -> "Lam(" ^ String.concat ~sep:", " b ^ ", " ^
                       string_of_expr c ^ ")"
-  |App (a, b) -> "App(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
+  |App (a, b) -> "App(" ^ string_of_expr a ^ ", " ^ 
+    String.concat ~sep:", " (List.map b string_of_expr) ^ ")"
   |List a -> "List[" ^ String.concat ~sep:", " (List.map a string_of_expr )
                 ^ "]"
   |Unit -> "()"
@@ -59,7 +60,7 @@ and string_of_val arg = match arg with
   |VF f -> Float.to_string f
   |VB b -> string_of_bool b
   |VStr s -> s
-  |VLam (a, b, c) -> "VLam(" ^ string_of_kind a ^ ", " ^ b ^ ", " ^
+  |VLam (b, c) -> "VLam(" ^ String.concat ~sep:", " b ^ ", " ^
                         string_of_expr c ^ ")"
   |VList a -> "[" ^ String.concat ~sep:", " (List.map a string_of_val ) 
                        ^ "]"
@@ -165,11 +166,11 @@ let rec eval expr state = match expr with
   |Add (a, b) -> add (eval a state) (eval b state)
   |Sub (a, b) -> sub (eval a state) (eval b state)
   |Less (a, b) -> less (eval a state) (eval b state)
-  |App (lam, var) -> begin
+  |App (lam, vars) -> begin
     match eval lam state with
-      VLam(t, str, body) ->
+      VLam(strs, body) ->
         begin
-        match Hashtbl.find state str with
+        (*match Hashtbl.find state str with
           Some x -> Hashtbl.replace state str (eval var state);
                     let v = eval body state in
                       Hashtbl.replace state str x;
@@ -177,7 +178,12 @@ let rec eval expr state = match expr with
           |None -> Hashtbl.replace state str (eval var state);
                    let v = eval body state in
                      Hashtbl.remove state str;
-                     v
+                     v*)
+        let args = List.zip_exn strs
+          (List.map vars (fun arg -> eval arg state)) in
+        let newscope = Hashtbl.copy state in
+          List.iter args (fun (s,v) -> Hashtbl.replace newscope s v);
+          eval body newscope
         end
       |_ -> invalid_arg "Can't apply on non-lambda."
     end

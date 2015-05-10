@@ -62,12 +62,12 @@ exp:
     { Get(e2, Lookup(e)) }
 | v = VAR
     { Lookup v }
-| l = exp LPAREN a = exp RPAREN
+| l = exp LPAREN a = expr_list RPAREN
     { App(l, a) }
 | t = type_t LPAREN a = exp RPAREN
     { Cast(a, t) }
-| FUNC v = VAR COLON t = type_t a = exp 
-    { Lam(t, v, a) }
+| FUNC vs = var_list COLON a = exp 
+    { Lam(vs, a) }
 | LPAREN e = exp RPAREN
     { e }
 | LPAREN RPAREN
@@ -138,6 +138,12 @@ var_typed:
     { [(v, e)] }
 | v = STRING COLON e = type_t COMMA vt = var_typed
     { (v, e) :: vt }
+
+var_list:
+| v = VAR
+    { [v] }
+| v = VAR COMMA vs = var_list
+    { v :: vs } 
 
 expr_list:
 | e = exp
