@@ -55,9 +55,11 @@ exp:
 | e = exp LBRACK v = STRING RBRACK
     { GetRec(v, e) }
 | e = VAR LBRACK v = STRING RBRACK
-    { GetRec(v,Lookup(e)) }
+    { GetRec(v, Lookup(e)) }
 | e1 = exp LBRACK e2 = exp RBRACK
     { Get(e2, e1) }
+| e = VAR LBRACK e2 = exp RBRACK
+    { Get(e2, Lookup(e)) }
 | v = VAR
     { Lookup v }
 | l = exp LPAREN a = exp RPAREN
