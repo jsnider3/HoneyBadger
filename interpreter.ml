@@ -293,14 +293,15 @@ let main src =
   let linebuf = Lexing.from_channel inpt in
   try
     let ast = (Parser.main Lexer.token linebuf) in
-      printf "%s\n" (string_of_expr ast);
+      if false then
+        printf "%s\n" (string_of_expr ast);
       printf "%s\n" (string_of_val (exec ast));
       In_channel.close inpt;
   with
   | Lexer.Error msg ->
 	  fprintf stderr "%s%!" msg
-  | Parser.Error ->
-	  fprintf stderr "Syntax error at offset %d.\n%!"
-        (Lexing.lexeme_start linebuf);;
+  | Parser.Error -> let pos = Lexing.lexeme_start_p linebuf in
+	  fprintf stderr "Syntax error line %d column %d.\n%!"
+        pos.pos_lnum pos.pos_bol;;
 
 main Sys.argv.(1)

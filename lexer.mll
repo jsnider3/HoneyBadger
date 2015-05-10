@@ -11,7 +11,9 @@
 }
 
 rule token = parse
-| [' ' '\t' '\n']
+| '\n'
+    { Lexing.new_line lexbuf; token lexbuf }
+| [' ' '\t']
     { token lexbuf }
 | "//"[^'\n']*
     { token lexbuf }
