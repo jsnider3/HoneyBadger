@@ -127,18 +127,14 @@ let cast_int v = match v with
   |VStr s -> VN (Int.of_string s)
   |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to int.")
 
+(*
+  cast_real ::value -> value
+*)
 let cast_real v = match v with
   VN num -> VF (Float.of_int num)
   |VF num -> VF num
   |VStr s -> VF (Float.of_string s)
   |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to real.")
-
-let cast_string v = match v with
-  VN num -> VStr (Int.to_string num)
-  |VB num -> VStr (Bool.to_string num)
-  |VF num -> VStr (Float.to_string num)
-  |VStr s -> VStr s
-  |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to string.")
 
 (*
   cast ::value -> type -> value
@@ -146,7 +142,7 @@ let cast_string v = match v with
 let cast v t = match t with
   TInt -> cast_int v
   |TReal -> cast_real v
-  |TStr -> cast_string v
+  |TStr -> VStr (string_of_val v)
   |_ -> raise (Failure ("Can't cast to " ^ string_of_kind t))
 
 (*
