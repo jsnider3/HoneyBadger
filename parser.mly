@@ -8,13 +8,14 @@
 %token <int> INT
 %token <float> FLOAT
 %token <bool> BOOL
-%token <string> VAR
+%token <string> VAR STRING
 %token PLUS MINUS TIMES 
-%token CAT FUNC
+%token FUNC
+%token PRINT READLINE
 %token SEMI COMMA COLON ASSIGN QUOTE
 %token EQUAL NOT AND OR NEQ LESS GRE LEQ GEQ
-%token IF THEN ELSE
-%token INT_T FLOAT_T RECORD_T TOP_T BOTTOM_T UNIT_T LIST_T
+%token IF THEN ELSE WHILE
+%token INT_T FLOAT_T STRING_T RECORD_T TOP_T BOTTOM_T UNIT_T LIST_T
 %token LPAREN RPAREN LBRACK RBRACK LCURL RCURL
 %token EOF
 
@@ -37,17 +38,23 @@ exp:
     { B b }
 | f = FLOAT
     { F f }
+| s = STRING
+    { Str s }
+| PRINT LPAREN e = exp RPAREN
+    { Print e }
+| READLINE LPAREN RPAREN
+    { printf "Readline 46\n"; Readline }
 | v = VAR ASSIGN e = exp
     { Set(v, e) }
-| v = VAR LBRACK f = q_var RBRACK ASSIGN e = exp
+| v = VAR LBRACK f = STRING RBRACK ASSIGN e = exp
     { SetRec(v, f, e) }
 | v = VAR LBRACK ind = exp RBRACK ASSIGN e = exp
     { SetInd(v, ind, e) }
 | e1 = exp EQUAL e2 = exp
     { Equal(e1, e2) }
-| e = exp LBRACK v = q_var RBRACK
+| e = exp LBRACK v = STRING RBRACK
     { GetRec(v, e) }
-| e = VAR LBRACK v = q_var RBRACK
+| e = VAR LBRACK v = STRING RBRACK
     { GetRec(v,Lookup(e)) }
 | e1 = exp LBRACK e2 = exp RBRACK
     { Get(e2, e1) }
@@ -60,7 +67,7 @@ exp:
 | LPAREN e = exp RPAREN
     { e }
 | LPAREN RPAREN
-    { Unit }
+    { printf "Unit 70\n";Unit }
 | LBRACK RBRACK
     { List [] }
 | e1 = exp PLUS e2 = exp
@@ -89,6 +96,8 @@ exp:
     { Not e }
 | IF e1 = exp THEN e2 = exp ELSE e3 = exp
     { If(e1, e2, e3) }
+| WHILE LPAREN e1 = exp RPAREN LCURL e = expr_seq RCURL
+    { While(e1, Seq e) }
 | LBRACK e = expr_list RBRACK
     { List e }
 | LCURL e = expr_seq RCURL
@@ -101,6 +110,8 @@ type_t:
     { TInt }
 | TOP_T
     { TTop }
+| STRING_T
+    { TStr }
 | BOTTOM_T
     { TBottom }
 | UNIT_T
@@ -113,19 +124,15 @@ type_t:
     { TRecord t }
 
 fields:
-| v = q_var COLON e = exp
+| v = STRING COLON e = exp
     { [(v, e)] }
-| v = q_var COLON e = exp COMMA vt = fields
+| v = STRING COLON e = exp COMMA vt = fields
     { (v, e) :: vt }
 
-q_var:
-| QUOTE v = VAR QUOTE
-    { v }
-
 var_typed:
-| v = q_var COLON e = type_t
+| v = STRING COLON e = type_t
     { [(v, e)] }
-| v = q_var COLON e = type_t COMMA vt = var_typed
+| v = STRING COLON e = type_t COMMA vt = var_typed
     { (v, e) :: vt }
 
 expr_list:

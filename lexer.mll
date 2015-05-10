@@ -17,6 +17,8 @@ rule token = parse
     { BOOL true}
 | "false"
     { BOOL false}
+| "while"
+    {WHILE}
 | "if"
     {IF}
 | "then"
@@ -25,6 +27,10 @@ rule token = parse
     {ELSE}
 | "fun"
     {FUNC}
+| "print"
+    { PRINT }
+| "readline"
+    { printf "Readline 33\n"; READLINE }
 | "=="
     {EQUAL}
 | "!="
@@ -51,8 +57,12 @@ rule token = parse
     { FLOAT (float_of_string f) }
 | ['a'-'z']+ as v
     { VAR v }
+| '"' [^'"']* '"' as s
+    { STRING s }
 | "Int"
     {INT_T}
+| "String"
+    {STRING_T}
 | "Float"
     {FLOAT_T}
 | "Record"

@@ -1,6 +1,6 @@
 type kind = TInt | TReal | TBool | TFunc of (kind * kind) 
   | TList of kind | TRecord of (string * kind) list 
-  | TUnit | TTop | TBottom
+  | TUnit | TTop | TBottom | TStr
 
 type expr = N of int | F of float| Add of (expr * expr) | Mul of (expr * expr) 
   | Sub of (expr * expr) | Less of (expr * expr) |And of (expr * expr) 
@@ -11,11 +11,12 @@ type expr = N of int | F of float| Add of (expr * expr) | Mul of (expr * expr)
   | GetRec of (string * expr) | SetRec of string * string * expr
   | SetInd of (string * expr * expr) 
   | As of (expr * kind)
+  | Str of string | Readline | Print of expr
   | Seq of expr list | Set of (string * expr) | Lookup of string 
   | While of (expr * expr) | Top | Bottom
 
 type value = VB of bool | VList of value list | VUnit | VN of int 
-  | VF of float | VLam of (kind * string * expr) 
+  | VF of float | VLam of (kind * string * expr) | VStr of string 
   | VRecord of (string * value) list | VTop | VBottom
 
 type env_type = (string, value) Hashtbl.t;;
