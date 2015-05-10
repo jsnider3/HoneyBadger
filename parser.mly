@@ -81,8 +81,6 @@ exp:
     { Not(Less(e1, e2)) }
 | e1 = exp LEQ e2 = exp
     { Or(Less(e1, e2), Equal(e1, e2)) }
-| e1 = exp CAT e2 = exp
-    { Concat(e1, e2) }
 | e1 = exp OR e2 = exp
     { Or(e1, e2) }
 | MINUS e = exp %prec UMINUS

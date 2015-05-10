@@ -65,8 +65,6 @@ rule token = parse
     {UNIT_T}
 | "List"
     {LIST_T}
-| "++"
-    { CAT }
 | '+'
     { PLUS }
 | '-'

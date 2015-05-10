@@ -36,7 +36,6 @@ let rec string_of_expr arg = match arg with
   |Unit -> "()"
   |Top -> "T"
   |Bottom -> "Bottom"
-  |Concat (a, b) -> "Concat(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |Get (a, b) -> "Get(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |GetRec (a, b) -> "GetRec(" ^ a ^ "," ^ string_of_expr b ^ ")"
   |SetRec (a, b, c) -> a ^ "[" ^ b ^ "] <- " ^ string_of_expr c 
@@ -102,7 +101,14 @@ let rec typecheck expr env = match expr with
   |Top -> TTop
   |Bottom -> TBottom
   |Equal (_, _) -> TBool
-  |Add (a, b) -> typecheck (Sub (a, b)) env
+  |Add (a, b) -> 
+    begin
+      match (typecheck a env, typecheck b env ) with
+        (TList type1, TList type2) -> TList (common_type type1 type2)
+        |(TList ty, TUnit) -> TList ty
+        |(TUnit, TList ty) -> TList ty
+        |_ -> typecheck (Sub (a, b)) env
+    end
   |Mul (a, b) -> typecheck (Sub (a, b)) env
   |Sub (a, b) -> 
     if subtype(typecheck a env) TReal && subtype(typecheck b env) TReal
@@ -124,13 +130,6 @@ let rec typecheck expr env = match expr with
   |Not a -> if subtype(typecheck a env) TBool 
     then TBool 
     else raise (Failure "Not of non-bool")
-  |Concat (a, b) ->  begin
-    match (typecheck a env, typecheck b env ) with
-      (TList type1, TList type2) -> TList (common_type type1 type2)
-      |(TList ty, TUnit) -> TList ty
-      |(TUnit, TList ty) -> TList ty
-      |_ -> raise (Failure "Can't concat non-lists.")
-    end
   |List [] -> TList TBottom
   |List (head::rest) -> begin
     match typecheck head env with
@@ -236,6 +235,54 @@ let rec make_expr v = match v with
   |VTop -> Top
   |VBottom -> Bottom
 
+
+(*
+  mul ::value -> value -> value
+       a -> b -> a * b
+*)
+let mul a b = match (a, b) with
+  (VN x, VN y) -> VN(x * y)
+  |(VN x, VF y) -> VF (Float.of_int x *. y)
+  |(VF x, VN y) -> VF(x *. Float.of_int y)
+  |(VF x, VF y) -> VF(x *. y)
+  |_ -> invalid_arg "Invalid args for multiplication."
+
+(*
+  add ::value -> value -> value
+       a -> b -> a + b
+*)
+let add a b = match (a, b) with
+  (VN x, VN y) -> VN(x + y)
+  |(VN x, VF y) -> VF (Float.of_int x +. y)
+  |(VF x, VN y) -> VF(x +. Float.of_int y)
+  |(VF x, VF y) -> VF(x +. y)
+  |(VList f, VList s) -> VList(f @ s)
+  |(VUnit, VList s) -> VList s
+  |(VList f, VUnit) -> VList f
+  |_ -> invalid_arg "Invalid args for addition."
+
+(*
+  sub ::value -> value -> value
+       a -> b -> a - b
+*)
+let sub a b = match (a, b) with
+  (VN x, VN y) -> VN(x - y)
+  |(VN x, VF y) -> VF (Float.of_int x -. y)
+  |(VF x, VN y) -> VF(x -. Float.of_int y)
+  |(VF x, VF y) -> VF(x -. y)
+  |_ -> invalid_arg "Invalid args for subtraction."
+
+(*
+  less ::value -> value -> value
+       a -> b -> a < b
+*)
+let less a b = match (a, b) with
+  (VN x, VN y) -> VB(x < y)
+  |(VN x, VF y) -> VB (Float.of_int x < y)
+  |(VF x, VN y) -> VB(x < Float.of_int y)
+  |(VF x, VF y) -> VB(x < y)
+  |_ -> invalid_arg "Invalid args for comparison."
+
 (*
   eval ::expr -> env_type -> value
        input -> current_state -> result
@@ -251,38 +298,10 @@ let rec eval expr state = match expr with
   |Record fields -> VRecord (List.Assoc.map fields (fun a -> eval a state))
 
 (* Numerical Functions  *)
-  |Mul (a, b) -> begin
-    match (eval a state, eval b state) with
-      (VN x, VN y) -> VN(x * y)
-      |(VN x, VF y) -> VF (Float.of_int x *. y)
-      |(VF x, VN y) -> VF(x *. Float.of_int y)
-      |(VF x, VF y) -> VF(x *. y)
-      |_ -> invalid_arg "Invalid args for multiplication."
-    end
-  |Add (a, b) -> begin
-    match (eval a state, eval b state) with
-      (VN x, VN y) -> VN(x+y)
-      |(VN x, VF y) -> VF ((Float.of_int x)+.y)
-      |(VF x, VN y) -> VF(x+.(Float.of_int y))
-      |(VF x, VF y) -> VF(x+.y)
-      |_ -> invalid_arg "Invalid args for addition."
-    end
-  |Sub (a, b) -> begin
-    match (eval a state, eval b state) with
-      (VN x, VN y) -> VN(x - y)
-      |(VN x, VF y) -> VF (Float.of_int x -. y)
-      |(VF x, VN y) -> VF(x -. Float.of_int y)
-      |(VF x, VF y) -> VF(x -. y)
-      |_ -> invalid_arg "Invalid args for subtracton."
-    end
-  |Less (a, b) -> begin
-    match (eval a state, eval b state) with
-      (VN x, VN y) -> VB(x < y)
-      |(VN x, VF y) -> VB ( Float.of_int x < y)
-      |(VF x, VN y) -> VB(x < Float.of_int y)
-      |(VF x, VF y) -> VB(x < y)
-      |_ -> invalid_arg "Invalid args for subtracton."
-    end
+  |Mul (a, b) -> mul (eval a state) (eval b state)
+  |Add (a, b) -> add (eval a state) (eval b state)
+  |Sub (a, b) -> sub (eval a state) (eval b state)
+  |Less (a, b) -> less (eval a state) (eval b state)
   |App (lam, var) -> begin
     match eval lam state with
       VLam(t, str, body) ->
@@ -324,18 +343,6 @@ let rec eval expr state = match expr with
     end
 
   (* List functions. *)
-  |Concat (a, b) -> begin
-    match eval a state with
-      VUnit -> eval b state (* Recursive base case *)
-      |VList fs -> 
-        begin
-        match eval b state with
-          VUnit -> VList fs
-          |VList sn -> VList (fs @ sn)
-          |_ -> raise (Failure "Impossible")
-        end
-      |_ -> raise (Failure "Impossible")
-    end
   |Get (index, mylist) -> begin
     let zero_index = 0 in
     match eval index state with (* Get the indexth member of list. *)
