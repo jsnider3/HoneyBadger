@@ -13,6 +13,8 @@
 rule token = parse
 | [' ' '\t' '\n']
     { token lexbuf }
+| "//"[^'\n']*
+    { token lexbuf }
 | "true"
     { BOOL true}
 | "false"
@@ -82,9 +84,9 @@ rule token = parse
 | '*'
     { TIMES }
 | '('
-    { LPAREN }
+    { printf "(\n"; LPAREN }
 | ')'
-    { RPAREN }
+    { printf ")\n"; RPAREN }
 | '{'
     { LCURL }
 | '}'
