@@ -7,7 +7,8 @@ install:
   - sudo add-apt-repository -y ppa:avsm/ppa
   - sudo apt-get update
   - sudo apt-get install -y ocaml ocaml-doc ocaml-findlib opam  
-      ocaml-native-compilers libpcre-ocaml-dev menhir
+      ocaml-native-compilers libpcre-ocaml-dev menhir libpcre-ocaml-wx8f8
+      ocaml-nox-3.12.1 libfindlib-ocaml
   - opam init -n
   - eval `opam config env`
   - opam install batteries core -y
