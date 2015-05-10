@@ -21,6 +21,7 @@ let rec string_of_expr arg = match arg with
   |B b -> "B " ^ string_of_bool b
   |Str s -> "String " ^ s
   |Readline -> "readline()"
+  |Len e -> "len(" ^ string_of_expr e ^ ")"
   |Print e -> "print(" ^ string_of_expr e ^ ")"
   |Add (a, b) -> "Add(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |Mul (a, b) -> "Mul(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
@@ -178,15 +179,6 @@ let rec eval expr state = match expr with
     match eval lam state with
       VLam(strs, body) ->
         begin
-        (*match Hashtbl.find state str with
-          Some x -> Hashtbl.replace state str (eval var state);
-                    let v = eval body state in
-                      Hashtbl.replace state str x;
-                      v
-          |None -> Hashtbl.replace state str (eval var state);
-                   let v = eval body state in
-                     Hashtbl.remove state str;
-                     v*)
         let args = List.zip_exn strs
           (List.map vars (fun arg -> eval arg state)) in
         let newscope = Hashtbl.copy state in
@@ -239,7 +231,7 @@ let rec eval expr state = match expr with
     let VRecord fields = eval a state in
     match List.Assoc.find fields str with
       Some x -> x
-      |None -> raise (Failure "Non-existent field")
+      |None -> invalid_arg("Non-existent field " ^ str)
     end
   |SetRec (var, field, expr) -> 
     begin
@@ -284,6 +276,12 @@ let rec eval expr state = match expr with
   |Bottom -> invalid_arg "Attempt to eval Bottom"
   |Print e -> print_endline (string_of_val (eval e state)); VUnit
   |Readline -> VStr (input_line stdin)
+  |Len e -> begin
+    match eval e state with
+      VList l -> VN (List.length l)
+      |VStr s -> VN (String.length s)
+      |a -> invalid_arg (string_of_val a ^ " doesn't have a length.")
+    end
 
 (*
   exec :: expr         -> Val

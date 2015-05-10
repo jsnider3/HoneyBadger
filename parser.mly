@@ -11,7 +11,7 @@
 %token <string> VAR STRING
 %token PLUS MINUS TIMES DIVIDE 
 %token FUNC
-%token PRINT READLINE
+%token PRINT READLINE LEN
 %token SEMI COMMA COLON ASSIGN
 %token EQUAL NOT AND OR NEQ LESS GRE LEQ GEQ
 %token IF THEN ELSE WHILE
@@ -42,6 +42,8 @@ exp:
     { Str s }
 | PRINT LPAREN e = exp RPAREN
     { Print e }
+| LEN LPAREN e = exp RPAREN
+    { Len e }
 | READLINE
     { Readline }
 | v = VAR ASSIGN e = exp

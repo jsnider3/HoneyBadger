@@ -33,6 +33,8 @@ rule token = parse
     {FUNC}
 | "print"
     { PRINT }
+| "len"
+    { LEN }
 | "readline" ' '*'('' '*')'
     { READLINE }
 | "=="
