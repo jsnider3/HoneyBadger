@@ -1,0 +1,13 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+# command to install dependencies
+install:
+  - sudo apt-get install -y "ocaml ocaml-doc ocaml-findlib opam\ 
+      ocaml-native-compilers libpcre-ocaml-dev menhir"
+  - opam init -n
+  - eval `opam config env`
+  - opam install batteries core -y
+# command to run tests
+script: mk

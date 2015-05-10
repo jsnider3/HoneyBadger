@@ -1,5 +1,5 @@
 all: HB lexer.cmx defs.cmx parser.cmx interpreter.cmx
-	@true
+	@python tester.py
 
 HB: interpreter.cmx
 	ocamlfind ocamlopt -o HB -linkpkg -package core -package core_kernel \
