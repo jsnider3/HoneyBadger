@@ -85,6 +85,8 @@ rule token = parse
     { MINUS }
 | '*'
     { TIMES }
+| '/'
+    { DIVIDE }
 | '('
     { LPAREN }
 | ')'

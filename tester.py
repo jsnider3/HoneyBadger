@@ -52,6 +52,12 @@ class Tests(unittest.TestCase):
   def test_2(self):
     assert(self.run_HB(INDIR+"test2.in") == self.cat(OUTDIR+"test2.out"))
 
+  def test_21(self):
+    assert(self.run_HB(INDIR+"test21.in") == self.cat(OUTDIR+"test21.out"))
+
+  def test_22(self):
+    assert(self.run_HB(INDIR+"test22.in") == self.cat(OUTDIR+"test22.out"))
+
   def test_3(self):
     assert(self.run_HB(INDIR+"test3.in") == self.cat(OUTDIR+"test3.out"))
 

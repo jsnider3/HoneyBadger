@@ -24,6 +24,7 @@ let rec string_of_expr arg = match arg with
   |Print e -> "print(" ^ string_of_expr e ^ ")"
   |Add (a, b) -> "Add(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |Mul (a, b) -> "Mul(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
+  |Div (a, b) -> "Div(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |Sub (a, b) -> "Sub(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |Less (a, b) -> "Less(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |And (a, b) -> "And(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
@@ -82,6 +83,12 @@ let mul a b = match (a, b) with
   |(VF x, VF y) -> VF(x *. y)
   |_ -> invalid_arg "Invalid args for multiplication."
 
+let div a b = match (a, b) with
+  (VN x, VN y) -> VF(Float.of_int x /. Float.of_int y)
+  |(VN x, VF y) -> VF (Float.of_int x /. y)
+  |(VF x, VN y) -> VF(x /. Float.of_int y)
+  |(VF x, VF y) -> VF(x /. y)
+  |_ -> invalid_arg "Invalid args for multiplication."
 (*
   add ::value -> value -> value
        a -> b -> a + b
@@ -163,6 +170,7 @@ let rec eval expr state = match expr with
 
 (* Numerical Functions  *)
   |Mul (a, b) -> mul (eval a state) (eval b state)
+  |Div (a, b) -> div (eval a state) (eval b state)
   |Add (a, b) -> add (eval a state) (eval b state)
   |Sub (a, b) -> sub (eval a state) (eval b state)
   |Less (a, b) -> less (eval a state) (eval b state)

@@ -2,7 +2,8 @@ type kind = TInt | TReal | TBool | TFunc of (kind * kind)
   | TList of kind | TRecord of (string * kind) list 
   | TUnit | TTop | TBottom | TStr
 
-type expr = N of int | F of float| Add of (expr * expr) | Mul of (expr * expr) 
+type expr = N of int | F of float| Add of (expr * expr)
+  | Mul of (expr * expr) | Div of (expr * expr)
   | Sub of (expr * expr) | Less of (expr * expr) |And of (expr * expr) 
   | Or of (expr * expr) | Not of expr |If of (expr * expr * expr) 
   | Equal of (expr * expr) | B of bool |Lam of (string list * expr) 

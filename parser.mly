@@ -9,7 +9,7 @@
 %token <float> FLOAT
 %token <bool> BOOL
 %token <string> VAR STRING
-%token PLUS MINUS TIMES 
+%token PLUS MINUS TIMES DIVIDE 
 %token FUNC
 %token PRINT READLINE
 %token SEMI COMMA COLON ASSIGN
@@ -20,7 +20,7 @@
 %token EOF
 
 %left PLUS MINUS        /* lowest precedence */
-%left TIMES             /* medium precedence */
+%left TIMES DIVIDE      /* medium precedence */
 %nonassoc UMINUS        /* highest precedence */
 
 %start <Defs.expr> main
@@ -80,6 +80,8 @@ exp:
     { Sub(e1, e2) }
 | e1 = exp TIMES e2 = exp
     { Mul(e1, e2) }
+| e1 = exp DIVIDE e2 = exp
+    { Div(e1, e2) }
 | e1 = exp AND e2 = exp
     { And(e1, e2) }
 | e1 = exp NEQ e2 = exp
