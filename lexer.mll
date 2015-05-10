@@ -101,8 +101,6 @@ rule token = parse
     { COLON }
 | ','
     { COMMA }
-| '"'
-    { QUOTE }
 | eof
     { EOF }
 | _ as c

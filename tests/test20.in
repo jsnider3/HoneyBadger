@@ -1,0 +1,6 @@
+{
+  print("Give me a float");
+  f = Float(readline());
+  print("You gave me " + String(f));
+  print("As an int that is " + String(Int(f)))
+}

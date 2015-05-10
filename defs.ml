@@ -10,7 +10,7 @@ type expr = N of int | F of float| Add of (expr * expr) | Mul of (expr * expr)
   | Get of (expr * expr) | Record of (string * expr) list 
   | GetRec of (string * expr) | SetRec of string * string * expr
   | SetInd of (string * expr * expr) 
-  | As of (expr * kind)
+  | Cast of (expr * kind)
   | Str of string | Readline | Print of expr
   | Seq of expr list | Set of (string * expr) | Lookup of string 
   | While of (expr * expr) | Top | Bottom

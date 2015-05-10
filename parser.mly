@@ -12,7 +12,7 @@
 %token PLUS MINUS TIMES 
 %token FUNC
 %token PRINT READLINE
-%token SEMI COMMA COLON ASSIGN QUOTE
+%token SEMI COMMA COLON ASSIGN
 %token EQUAL NOT AND OR NEQ LESS GRE LEQ GEQ
 %token IF THEN ELSE WHILE
 %token INT_T FLOAT_T STRING_T RECORD_T TOP_T BOTTOM_T UNIT_T LIST_T
@@ -62,6 +62,8 @@ exp:
     { Lookup v }
 | l = exp LPAREN a = exp RPAREN
     { App(l, a) }
+| t = type_t LPAREN a = exp RPAREN
+    { Cast(a, t) }
 | FUNC v = VAR COLON t = type_t a = exp 
     { Lam(t, v, a) }
 | LPAREN e = exp RPAREN

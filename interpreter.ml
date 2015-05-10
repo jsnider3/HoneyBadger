@@ -44,7 +44,7 @@ let rec string_of_expr arg = match arg with
   |GetRec (a, b) -> "GetRec(" ^ a ^ "," ^ string_of_expr b ^ ")"
   |SetRec (a, b, c) -> a ^ "[" ^ b ^ "] <- " ^ string_of_expr c 
   |SetInd (a, b, c) -> a ^ "[" ^ string_of_expr b ^ "] <- " ^ string_of_expr c 
-  |As (a, b) -> "As(" ^ string_of_expr a ^ ", kind)"
+  |Cast (a, b) -> "Cast(" ^ string_of_expr a ^ ", kind)"
   |Lookup a -> "Lookup " ^ a
   |While (a, b) -> "While(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |Record fields -> "Record[" ^ String.concat ~sep:", " 
@@ -93,6 +93,7 @@ let add a b = match (a, b) with
   |(VList f, VList s) -> VList(f @ s)
   |(VUnit, VList s) -> VList s
   |(VList f, VUnit) -> VList f
+  |(VStr f, VStr s) -> VStr (f ^ s)
   |_ -> invalid_arg "Invalid args for addition."
 
 (*
@@ -116,6 +117,37 @@ let less a b = match (a, b) with
   |(VF x, VN y) -> VB(x < Float.of_int y)
   |(VF x, VF y) -> VB(x < y)
   |_ -> invalid_arg "Invalid args for comparison."
+
+(*
+  cast_int ::value -> value
+*)
+let cast_int v = match v with
+  VN num -> VN num
+  |VF num -> VN (Float.to_int num)
+  |VStr s -> VN (Int.of_string s)
+  |_ -> raise (Failure ("Can't cast " ^ string_of_val v ^ " to int."))
+
+let cast_real v = match v with
+  VN num -> VF (Float.of_int num)
+  |VF num -> VF num
+  |VStr s -> VF (Float.of_string s)
+  |_ -> raise (Failure ("Can't cast " ^ string_of_val v ^ " to real."))
+
+let cast_string v = match v with
+  VN num -> VStr (Int.to_string num)
+  |VB num -> VStr (Bool.to_string num)
+  |VF num -> VStr (Float.to_string num)
+  |VStr s -> VStr s
+  |_ -> raise (Failure ("Can't cast " ^ string_of_val v ^ " to string."))
+
+(*
+  cast ::value -> type -> value
+*)
+let cast v t = match t with
+  TInt -> cast_int v
+  |TReal -> cast_real v
+  |TStr -> cast_string v
+  |_ -> raise (Failure ("Can't cast to " ^ string_of_kind t))
 
 (*
   eval ::expr -> env_type -> value
@@ -189,6 +221,7 @@ let rec eval expr state = match expr with
             VList ls -> List.nth_exn ls num
             |_ -> raise (Failure "Impossible")
           end
+      |(VF num) -> eval (Get (N (Float.to_int num), mylist)) state
       |_ -> invalid_arg "Not a number index"
     end
   |GetRec (str, a) -> 
@@ -218,7 +251,7 @@ let rec eval expr state = match expr with
           Hashtbl.replace state var (VList res); VList res
       |k -> invalid_arg "Invalid list index." 
     end
-  |As (expr, _) -> eval expr state
+  |Cast (expr, t) -> cast (eval expr state) t
   |Seq a -> List.fold ~init:(VB true) ~f:(fun _ b -> eval b state) a
   |Set (name, a) -> let v = eval a state in
     Hashtbl.replace state name v; v
@@ -252,11 +285,11 @@ let exec a =
 
 (*
   Main
-  Read stdin until eof, parse that as an expr,
+  Read from input until eof, parse that as an expr,
   and print what it evaluates to.
 *)
-let main () =
-  let inpt = open_in (Sys.argv.(1)) in
+let main src =
+  let inpt = open_in src in
   let linebuf = Lexing.from_channel inpt in
   try
     let ast = (Parser.main Lexer.token linebuf) in
@@ -270,4 +303,4 @@ let main () =
 	  fprintf stderr "Syntax error at offset %d.\n%!"
         (Lexing.lexeme_start linebuf);;
 
-main ()
+main Sys.argv.(1)
