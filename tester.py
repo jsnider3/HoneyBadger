@@ -15,66 +15,69 @@ class Tests(unittest.TestCase):
     lines = f.readlines()
     f.close()
     return lines
+
+  def dotest(self, fname):
+    assert(self.run_HB(INDIR+fname+".in") == self.cat(OUTDIR+fname+".out"))
   
   def test_0(self):
-    assert(self.run_HB(INDIR+"test0.in") == self.cat(OUTDIR+"test0.out"))
+    self.dotest("test0")
 
   def test_10(self):
-    assert(self.run_HB(INDIR+"test10.in") == self.cat(OUTDIR+"test10.out"))
+    self.dotest("test10")
 
   def test_11(self):
-    assert(self.run_HB(INDIR+"test11.in") == self.cat(OUTDIR+"test11.out"))
+    self.dotest("test11")
 
   def test_12(self):
-    assert(self.run_HB(INDIR+"test12.in") == self.cat(OUTDIR+"test12.out"))
+    self.dotest("test12")
 
   def test_13(self):
-    assert(self.run_HB(INDIR+"test13.in") == self.cat(OUTDIR+"test13.out"))
+    self.dotest("test13")
 
   def test_14(self):
-    assert(self.run_HB(INDIR+"test14.in") == self.cat(OUTDIR+"test14.out"))
+    self.dotest("test14")
 
   def test_15(self):
-    assert(self.run_HB(INDIR+"test15.in") == self.cat(OUTDIR+"test15.out"))
+    self.dotest("test15")
 
   def test_16(self):
-    assert(self.run_HB(INDIR+"test16.in") == self.cat(OUTDIR+"test16.out"))
+    self.dotest("test16")
 
   def test_17(self):
-    assert(self.run_HB(INDIR+"test17.in") == self.cat(OUTDIR+"test17.out"))
+    self.dotest("test17")
 
   def test_19(self):
-    assert(self.run_HB(INDIR+"test19.in") == self.cat(OUTDIR+"test19.out"))
+    self.dotest("test19")
 
   def test_1(self):
-    assert(self.run_HB(INDIR+"test1.in") == self.cat(OUTDIR+"test1.out"))
+    self.dotest("test1")
 
   def test_2(self):
-    assert(self.run_HB(INDIR+"test2.in") == self.cat(OUTDIR+"test2.out"))
+    self.dotest("test2")
 
   def test_21(self):
-    assert(self.run_HB(INDIR+"test21.in") == self.cat(OUTDIR+"test21.out"))
+    self.dotest("test21")
 
   def test_22(self):
-    assert(self.run_HB(INDIR+"test22.in") == self.cat(OUTDIR+"test22.out"))
+    self.dotest("test22")
 
   def test_3(self):
-    assert(self.run_HB(INDIR+"test3.in") == self.cat(OUTDIR+"test3.out"))
+    self.dotest("test3")
 
   def test_4(self):
-    assert(self.run_HB(INDIR+"test4.in") == self.cat(OUTDIR+"test4.out"))
+    self.dotest("test4")
 
   def test_5(self):
-    assert(self.run_HB(INDIR+"test5.in") == self.cat(OUTDIR+"test5.out"))
+    self.dotest("test5")
 
   def test_6(self):
-    assert(self.run_HB(INDIR+"test6.in") == self.cat(OUTDIR+"test6.out"))
+    self.dotest("test6")
 
   def test_7(self):
-    assert(self.run_HB(INDIR+"test7.in") == self.cat(OUTDIR+"test7.out"))
+    self.dotest("test7")
 
   def test_9(self):
-    assert(self.run_HB(INDIR+"test9.in") == self.cat(OUTDIR+"test9.out"))
+    self.dotest("test9")
 
 if __name__ == '__main__':
   unittest.main()
