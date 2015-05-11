@@ -17,7 +17,7 @@ class Tests(unittest.TestCase):
     return lines
 
   def dotest(self, fname):
-    assert(self.run_HB(INDIR+fname+".hb") == self.cat(OUTDIR+fname+".out"))
+    assert(self.run_HB(INDIR+fname+".hnb") == self.cat(OUTDIR+fname+".out"))
   
   def test_0(self):
     self.dotest("test0")
