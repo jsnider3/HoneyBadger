@@ -61,7 +61,7 @@ rule token = parse
     { INT (int_of_string i) }
 | ['0'-'9']*'.'['0'-'9']+ as f
     { FLOAT (float_of_string f) }
-| ['a'-'z']+ as v
+| ['a'-'z']['a' - 'z' '0'-'9' '_' 'A' - 'Z']* as v
     { VAR v }
 | '"' [^'"']* '"' as s
     { STRING (String.sub s 1 (String.length s - 2)) }
