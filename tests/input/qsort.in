@@ -20,20 +20,20 @@
   partition = fun arr, lo, hi : {
     index = Int((lo + hi) / 2);
     pivot = arr[index];
-    arr = swap(arr, hi, index);
+    swap(arr, hi, index);
     store = lo;
     i = lo;
     while (i < hi) 
     {
       if (arr[i] <= pivot) then
       {
-        arr = swap(arr, i, store);
+        swap(arr, i, store);
         store = store + 1
       }
       else [];
       i = i + 1
     }; 
-    arr = swap(arr, hi, store);
+    swap(arr, hi, store);
     store
   };
   
