@@ -88,5 +88,8 @@ class Tests(unittest.TestCase):
   def test_qsort(self):
     self.dotest("qsort")
 
+  def test_argOrder(self):
+    self.dotest("argOrder")
+
 if __name__ == '__main__':
   unittest.main()
