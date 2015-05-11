@@ -10,7 +10,7 @@ let rec string_of_kind arg = match arg with
   |TBool -> "Bool"
   |TStr -> "String"
   |TFunc (a, b) -> "Fun " ^ string_of_kind a ^ " -> " ^ string_of_kind b
-  |TList a -> "List " ^ string_of_kind a
+  |TArr a -> "Arr " ^ string_of_kind a
   |TRecord a -> "Record"
   |TUnit -> "()"
   |TTop -> "T"
@@ -41,7 +41,7 @@ let rec string_of_expr arg = match arg with
                       string_of_expr c ^ ")"
   |App (a, b) -> "App(" ^ string_of_expr a ^ ", " ^ 
     String.concat ~sep:", " (List.map b string_of_expr) ^ ")"
-  |List a -> "List[" ^ String.concat ~sep:", " (List.map a string_of_expr )
+  |Arr a -> "List[" ^ String.concat ~sep:", " (List.map (Array.to_list a) string_of_expr )
                 ^ "]"
   |Unit -> "()"
   |Top -> "T"
@@ -60,6 +60,9 @@ let rec string_of_expr arg = match arg with
               ^ "]"
   |Set (s, x) -> "Set (" ^ s ^ ", " ^ string_of_expr x ^ ")"
 
+(**
+  Represent a value as a human-readable string.
+*)
 and string_of_val arg = match arg with
   VN a -> string_of_int a
   |VF f -> Float.to_string f
@@ -67,7 +70,7 @@ and string_of_val arg = match arg with
   |VStr s -> s
   |VLam (b, c) -> "VLam(" ^ String.concat ~sep:", " b ^ ", " ^
                         string_of_expr c ^ ")"
-  |VList a -> "[" ^ String.concat ~sep:", " (List.map a string_of_val ) 
+  |VArr a -> "[" ^ String.concat ~sep:", " (List.map (Array.to_list a) string_of_val ) 
                        ^ "]"
   |VUnit -> "()"
   |VTop -> "T"
@@ -110,9 +113,9 @@ let add a b = match (a, b) with
   |(VN x, VF y) -> VF (Float.of_int x +. y)
   |(VF x, VN y) -> VF(x +. Float.of_int y)
   |(VF x, VF y) -> VF(x +. y)
-  |(VList f, VList s) -> VList(f @ s)
-  |(VUnit, VList s) -> VList s
-  |(VList f, VUnit) -> VList f
+  |(VArr f, VArr s) -> VArr (Array.append f s)
+  |(VUnit, VArr s) -> VArr s
+  |(VArr f, VUnit) -> VArr f
   |(VStr f, VStr s) -> VStr (f ^ s)
   |_ -> invalid_arg "Invalid args for addition."
 
@@ -189,7 +192,7 @@ let rec eval expr state = match expr with
   |B b -> VB b
   |Str s -> VStr s
   |Lam a -> VLam a
-  |List a -> VList (List.map a (fun e -> eval e state))
+  |Arr a -> VArr (Array.map a ~f:(fun e -> eval e state))
   |Unit -> VUnit
   |Equal (a, b) -> VB(eval a state = eval b state)
   |Record fields -> VRecord (List.Assoc.map fields (fun a -> eval a state))
@@ -204,11 +207,14 @@ let rec eval expr state = match expr with
     match eval lam state with
       VLam(strs, body) ->
         begin
-        let args = List.zip_exn strs
-          (List.map vars (fun arg -> eval arg state)) in
-        let newscope = Hashtbl.copy state in
-          List.iter args (fun (s,v) -> Hashtbl.replace newscope s v);
-          eval body newscope
+        if (List.length strs = List.length vars) then
+          let args = List.zip_exn strs
+            (List.map vars (fun arg -> eval arg state)) in
+          let newscope = Hashtbl.copy state in
+            List.iter args (fun (s,v) -> Hashtbl.replace newscope s v);
+            eval body newscope
+        else
+          invalid_arg ("Function call with wrong number of args.")
         end
       |_ -> invalid_arg "Can't apply on non-lambda."
     end
@@ -236,7 +242,7 @@ let rec eval expr state = match expr with
       |_ -> invalid_arg "Invalid arg for not."
     end
 
-  (* List functions. *)
+  (* Array functions. *)
   |Get (index, mylist) -> begin
     let zero_index = 0 in
     match eval index state with (* Get the indexth member of list. *)
@@ -245,7 +251,7 @@ let rec eval expr state = match expr with
         else 
           begin
           match eval mylist state with
-            VList ls -> List.nth_exn ls num
+            VArr ls -> ls.(num)
             |_ -> raise (Failure "Impossible")
           end
       |(VF num) -> eval (Get (N (Float.to_int num), mylist)) state
@@ -269,13 +275,8 @@ let rec eval expr state = match expr with
   |SetInd (var, ind, expr) -> 
     begin
     match (eval (Lookup var) state, eval ind state) with
-      (VList ls, VN a) -> 
-        let res = List.take ls a @ [eval expr state] @ List.drop ls (a + 1) in
-          Hashtbl.replace state var (VList res); VList res
-      |(VList ls, VF a) -> 
-        let res = List.take ls (Float.to_int a) @ [eval expr state] 
-            @ List.drop ls ((Float.to_int a) + 1) in
-          Hashtbl.replace state var (VList res); VList res
+      (VArr ls, VN a) -> Array.set ls a (eval expr state); VArr ls
+      |(VArr ls, VF a) -> Array.set ls (Float.to_int a) (eval expr state); VArr ls 
       |k -> invalid_arg "Invalid list index." 
     end
   |Cast (expr, t) -> cast (eval expr state) t
@@ -286,7 +287,7 @@ let rec eval expr state = match expr with
     begin
     match Hashtbl.find state name with
       Some x -> x
-      |None -> raise (Failure ("Undefined var " ^ name))
+      |None -> invalid_arg ("Undefined var " ^ name)
     end
   |While (guard, body) -> 
     let rec eval_loop () =
@@ -303,7 +304,7 @@ let rec eval expr state = match expr with
   |Readline -> VStr (input_line stdin)
   |Len e -> begin
     match eval e state with
-      VList l -> VN (List.length l)
+      VArr l -> VN (Array.length l)
       |VStr s -> VN (String.length s)
       |a -> invalid_arg (string_of_val a ^ " doesn't have a length.")
     end

@@ -79,8 +79,8 @@ rule token = parse
     {BOTTOM_T}
 | '(' ')'
     {UNIT_T}
-| "List"
-    {LIST_T}
+| "Arr"
+    {ARR_T}
 | '+'
     { PLUS }
 | '-'

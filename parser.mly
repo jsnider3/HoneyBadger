@@ -15,7 +15,7 @@
 %token SEMI COMMA COLON ASSIGN
 %token EQUAL NOT AND OR NEQ LESS GRE LEQ GEQ
 %token IF THEN ELSE WHILE
-%token INT_T FLOAT_T STRING_T RECORD_T TOP_T BOTTOM_T UNIT_T LIST_T
+%token INT_T FLOAT_T STRING_T RECORD_T TOP_T BOTTOM_T UNIT_T ARR_T
 %token LPAREN RPAREN LBRACK RBRACK LCURL RCURL
 %token EOF
 
@@ -75,7 +75,7 @@ exp:
 | LPAREN RPAREN
     { Unit }
 | LBRACK RBRACK
-    { List [] }
+    { Arr (Array.of_list []) }
 | e1 = exp PLUS e2 = exp
     { Add(e1, e2) }
 | e1 = exp MINUS e2 = exp
@@ -107,7 +107,7 @@ exp:
 | WHILE LPAREN e1 = exp RPAREN LCURL e = expr_seq RCURL
     { While(e1, Seq e) }
 | LBRACK e = expr_list RBRACK
-    { List e }
+    { Arr (Array.of_list e) }
 | LCURL e = expr_seq RCURL
     { Seq e }
 | LCURL f = fields RCURL
@@ -126,8 +126,8 @@ type_t:
     { TUnit }
 | FLOAT_T
     { TReal }
-| LIST_T t = type_t
-    { TList t }
+| ARR_T t = type_t
+    { TArr t }
 |RECORD_T LBRACK t = var_typed RBRACK
     { TRecord t }
 
