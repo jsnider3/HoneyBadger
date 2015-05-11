@@ -129,8 +129,8 @@ type_t:
     { TUnit }
 | FLOAT_T
     { TReal }
-| ARR_T t = type_t
-    { TArr t }
+| ARR_T
+    { TArr }
 |RECORD_T LBRACK t = var_typed RBRACK
     { TRecord t }
 

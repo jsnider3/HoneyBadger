@@ -3,7 +3,7 @@ all: HB
 
 doc: HB
 	mkdir -p docs
-	ocamlfind ocamldoc interpreter.ml -I ./ -package core -package \
+	ocamlfind ocamldoc defs.ml interpreter.ml -I ./ -package core -package \
 		core_kernel -thread -d docs -html
 
 HB: interpreter.cmx

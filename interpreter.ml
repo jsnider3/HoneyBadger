@@ -9,8 +9,8 @@ let rec string_of_kind arg = match arg with
   |TReal -> "Real"
   |TBool -> "Bool"
   |TStr -> "String"
-  |TFunc (a, b) -> "Fun " ^ string_of_kind a ^ " -> " ^ string_of_kind b
-  |TArr a -> "Arr " ^ string_of_kind a
+  |TFunc -> "Func"
+  |TArr -> "Arr "
   |TRecord a -> "Record"
   |TUnit -> "()"
   |TTop -> "T"
@@ -197,11 +197,17 @@ let cast_bool v = match v with
   For casting to string, see string_of_val.
   Throws an exception for all others.
 *)
-let cast v t = match t with
-  TInt -> cast_int v
-  |TReal -> cast_real v
-  |TBool -> cast_bool v
-  |TStr -> VStr (string_of_val v)
+let cast v t = match (t, v) with
+  (TInt, _) -> cast_int v
+  |(TReal, _) -> cast_real v
+  |(TBool, _) -> cast_bool v
+  |(TStr, _) -> VStr (string_of_val v)
+  |(TFunc, VLam _) -> v
+  |(TRecord _, VRecord _) -> v
+  |(TUnit, VUnit) -> v
+  |(TArr, VArr _) -> v
+  |(TTop, _) -> v
+  |(TBottom, _) -> v
   |_ -> invalid_arg ("Can't cast to " ^ string_of_kind t)
 
 (**

@@ -4,13 +4,17 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
+<link rel="previous" href="Defs.html">
 <link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Defs" rel="Chapter" href="Defs.html">
 <link title="Interpreter" rel="Chapter" href="Interpreter.html"><title>Interpreter</title>
 </head>
 <body>
-<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+<div class="navbar"><a class="pre" href="Defs.html" title="Defs">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;</div>
 <h1>Module <a href="type_Interpreter.html">Interpreter</a></h1>
 
@@ -20,27 +24,27 @@ Reference implementation for the Honey Badger
 </div>
 <hr width="100%">
 
-<pre><span id="VALstring_of_kind"><span class="keyword">val</span> string_of_kind</span> : <code class="type">Defs.kind -> string</code></pre>
-<pre><span id="VALstring_of_expr"><span class="keyword">val</span> string_of_expr</span> : <code class="type">Defs.expr -> Core.Std.String.t</code></pre><div class="info ">
+<pre><span id="VALstring_of_kind"><span class="keyword">val</span> string_of_kind</span> : <code class="type"><a href="Defs.html#TYPEkind">Defs.kind</a> -> string</code></pre>
+<pre><span id="VALstring_of_expr"><span class="keyword">val</span> string_of_expr</span> : <code class="type"><a href="Defs.html#TYPEexpr">Defs.expr</a> -> Core.Std.String.t</code></pre><div class="info ">
 Return the abstract syntax tree rooted at arg represented
   as a string.<br>
 </div>
 
-<pre><span id="VALstring_of_val"><span class="keyword">val</span> string_of_val</span> : <code class="type">Defs.value -> Core.Std.String.t</code></pre><div class="info ">
+<pre><span id="VALstring_of_val"><span class="keyword">val</span> string_of_val</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> Core.Std.String.t</code></pre><div class="info ">
 Represent a value as a human-readable string.<br>
 </div>
 
-<pre><span id="VALmul"><span class="keyword">val</span> mul</span> : <code class="type">Defs.value -> Defs.value -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALmul"><span class="keyword">val</span> mul</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 Return a * b.
   Throws an exception in either a or b is a non-number.<br>
 </div>
 
-<pre><span id="VALdiv"><span class="keyword">val</span> div</span> : <code class="type">Defs.value -> Defs.value -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALdiv"><span class="keyword">val</span> div</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 Return a / b.
   Throws an exception if either a or b is a non-number.<br>
 </div>
 
-<pre><span id="VALadd"><span class="keyword">val</span> add</span> : <code class="type">Defs.value -> Defs.value -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALadd"><span class="keyword">val</span> add</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 Return a + b.
   If a and b are numbers, performs addition.
   If a and b are strings, concatenates them.
@@ -48,17 +52,17 @@ Return a + b.
   Throws an exception otherwise.<br>
 </div>
 
-<pre><span id="VALsub"><span class="keyword">val</span> sub</span> : <code class="type">Defs.value -> Defs.value -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALsub"><span class="keyword">val</span> sub</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 Return a - b.
   Throws an exception if either a or b is a non-number.<br>
 </div>
 
-<pre><span id="VALless"><span class="keyword">val</span> less</span> : <code class="type">Defs.value -> Defs.value -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALless"><span class="keyword">val</span> less</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 Return a &lt; b.
   Throws an exception if either a or b is a non-number.<br>
 </div>
 
-<pre><span id="VALcast_int"><span class="keyword">val</span> cast_int</span> : <code class="type">Defs.value -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALcast_int"><span class="keyword">val</span> cast_int</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 casts v to an int.
   For ints, this returns v.
   For floats, this returns v rounded towards zero.
@@ -68,7 +72,7 @@ casts v to an int.
     doesn't represent an int.<br>
 </div>
 
-<pre><span id="VALcast_real"><span class="keyword">val</span> cast_real</span> : <code class="type">Defs.value -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALcast_real"><span class="keyword">val</span> cast_real</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 casts v to a float.
   For ints, this returns v.
   For floats, this returns v.
@@ -78,7 +82,7 @@ casts v to a float.
     doesn't represent a float.<br>
 </div>
 
-<pre><span id="VALcast_bool"><span class="keyword">val</span> cast_bool</span> : <code class="type">Defs.value -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALcast_bool"><span class="keyword">val</span> cast_bool</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 casts v to a bool.
   For numbers, 0 is false and all others are true.
   For strings, "true" is true and "false" is false.
@@ -87,7 +91,7 @@ casts v to a bool.
     is not "true" or "false".<br>
 </div>
 
-<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">Defs.value -> Defs.kind -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEkind">Defs.kind</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 casts v to type t.
   For casting to int, see cast_int.
   For casting to float, see cast_float
@@ -95,12 +99,12 @@ casts v to type t.
   Throws an exception for all others.<br>
 </div>
 
-<pre><span id="VALeval"><span class="keyword">val</span> eval</span> : <code class="type">Defs.expr -> (string, Defs.value) Core.Std.Hashtbl.t -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALeval"><span class="keyword">val</span> eval</span> : <code class="type"><a href="Defs.html#TYPEexpr">Defs.expr</a> -> (string, <a href="Defs.html#TYPEvalue">Defs.value</a>) Core.Std.Hashtbl.t -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 Evaluates expr with the given state and returns
     a value.<br>
 </div>
 
-<pre><span id="VALexec"><span class="keyword">val</span> exec</span> : <code class="type">Defs.expr -> Defs.value</code></pre><div class="info ">
+<pre><span id="VALexec"><span class="keyword">val</span> exec</span> : <code class="type"><a href="Defs.html#TYPEexpr">Defs.expr</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 Convenience function to wrap eval.<br>
 </div>
 

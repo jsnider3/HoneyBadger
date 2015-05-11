@@ -1,7 +1,17 @@
-type kind = TInt | TReal | TBool | TFunc of (kind * kind) 
-  | TArr of kind | TRecord of (string * kind) list 
+(**
+  Provides types used throughout the interpreter.
+*)
+
+(**
+  Types that Honey Badger values may belong to.
+*)
+type kind = TInt | TReal | TBool | TFunc 
+  | TArr  | TRecord of (string * kind) list 
   | TUnit | TTop | TBottom | TStr
 
+(**
+  Types that Honey Badger values may belong to.
+*)
 type expr = N of int | F of float| Add of (expr * expr)
   | Mul of (expr * expr) | Div of (expr * expr)
   | Sub of (expr * expr) | Less of (expr * expr) |And of (expr * expr) 
@@ -16,9 +26,9 @@ type expr = N of int | F of float| Add of (expr * expr)
   | Seq of expr list | Set of (string * expr) | Lookup of string 
   | While of (expr * expr) | Top | Bottom
 
+(**
+  Types of values that are possible in Honey Badger.
+*)
 type value = VB of bool | VArr of value array | VUnit | VN of int 
   | VF of float | VLam of (string list * expr) | VStr of string 
   | VRecord of (string * value) list | VTop | VBottom
-
-type env_type = (string, value) Hashtbl.t;;
-type type_map = (string, kind) Hashtbl.t;;
