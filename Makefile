@@ -1,5 +1,10 @@
-all: HB lexer.cmx defs.cmx parser.cmx interpreter.cmx
+all: HB
 	@python tester.py
+
+doc: HB
+	mkdir -p docs
+	ocamlfind ocamldoc interpreter.ml -I ./ -package core -package \
+		core_kernel -thread -d docs -html
 
 HB: interpreter.cmx
 	ocamlfind ocamlopt -o HB -linkpkg -package core -package core_kernel \
@@ -25,4 +30,4 @@ lexer.ml: lexer.mll
 	ocamllex lexer.mll
 
 clean:
-	@rm HB *.o *.cmi *.cmx lexer.ml parser.ml parser.mli 2>/dev/null || true
+	@rm -r docs HB *.3o ocamldoc.* *.o *.cmi *.cmx lexer.ml parser.ml parser.mli 2>/dev/null || true

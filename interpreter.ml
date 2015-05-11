@@ -1,4 +1,5 @@
-
+(** Reference implementation for the Honey Badger
+  programming language. *)
 open Core.Std
 open Defs
 open Printf
@@ -15,6 +16,8 @@ let rec string_of_kind arg = match arg with
   |TTop -> "T"
   |TBottom -> "Bottom"
 
+(** Return the abstract syntax tree rooted at arg represented
+  as a string. *)
 let rec string_of_expr arg = match arg with
   N a -> "N " ^ string_of_int a
   |F f -> "F " ^ Float.to_string f
@@ -73,9 +76,9 @@ and string_of_val arg = match arg with
                         (List.map fields (fun field -> fst field ^ " = " ^ 
                           string_of_val (snd field))) ^ "}"
 
-(*
-  mul ::value -> value -> value
-       a -> b -> a * b
+(**
+  Return a * b.
+  Throws an exception in either a or b is a non-number.
 *)
 let mul a b = match (a, b) with
   (VN x, VN y) -> VN(x * y)
@@ -84,15 +87,23 @@ let mul a b = match (a, b) with
   |(VF x, VF y) -> VF(x *. y)
   |_ -> invalid_arg "Invalid args for multiplication."
 
+(**
+  Return a / b.
+  Throws an exception if either a or b is a non-number.
+*)
 let div a b = match (a, b) with
   (VN x, VN y) -> VF(Float.of_int x /. Float.of_int y)
   |(VN x, VF y) -> VF (Float.of_int x /. y)
   |(VF x, VN y) -> VF(x /. Float.of_int y)
   |(VF x, VF y) -> VF(x /. y)
   |_ -> invalid_arg "Invalid args for multiplication."
-(*
-  add ::value -> value -> value
-       a -> b -> a + b
+
+(**
+  Return a + b.
+  If a and b are numbers, performs addition.
+  If a and b are strings, concatenates them.
+  If a and b are lists, concatenates them.
+  Throws an exception otherwise.
 *)
 let add a b = match (a, b) with
   (VN x, VN y) -> VN(x + y)
@@ -105,9 +116,9 @@ let add a b = match (a, b) with
   |(VStr f, VStr s) -> VStr (f ^ s)
   |_ -> invalid_arg "Invalid args for addition."
 
-(*
-  sub ::value -> value -> value
-       a -> b -> a - b
+(**
+  Return a - b.
+  Throws an exception if either a or b is a non-number.
 *)
 let sub a b = match (a, b) with
   (VN x, VN y) -> VN(x - y)
@@ -116,9 +127,9 @@ let sub a b = match (a, b) with
   |(VF x, VF y) -> VF(x -. y)
   |_ -> invalid_arg "Invalid args for subtraction."
 
-(*
-  less ::value -> value -> value
-       a -> b -> a < b
+(**
+  Return a < b.
+  Throws an exception if either a or b is a non-number.
 *)
 let less a b = match (a, b) with
   (VN x, VN y) -> VB(x < y)
@@ -127,8 +138,13 @@ let less a b = match (a, b) with
   |(VF x, VF y) -> VB(x < y)
   |_ -> invalid_arg "Invalid args for comparison."
 
-(*
-  cast_int ::value -> value
+(**
+  casts v to an int.
+  For ints, this returns v.
+  For floats, this returns v rounded towards zero.
+  For strings, this tries to parse v as an int.
+  Throws exceptions for other inputs or if v is a string that
+    doesn't represent an int.
 *)
 let cast_int v = match v with
   VN num -> VN num
@@ -136,8 +152,13 @@ let cast_int v = match v with
   |VStr s -> VN (Int.of_string s)
   |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to int.")
 
-(*
-  cast_real ::value -> value
+(**
+  casts v to a float.
+  For ints, this returns v.
+  For floats, this returns v.
+  For strings, this tries to parse v as a float.
+  Throws exceptions for other inputs or if v is a string that
+    doesn't represent a float.
 *)
 let cast_real v = match v with
   VN num -> VF (Float.of_int num)
@@ -145,18 +166,22 @@ let cast_real v = match v with
   |VStr s -> VF (Float.of_string s)
   |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to real.")
 
-(*
-  cast ::value -> type -> value
+(**
+  casts v to type t.
+  For casting to int, see cast_int.
+  For casting to float, see cast_float
+  For casting to string, see string_of_val.
+  Throws an exception for all others.
 *)
 let cast v t = match t with
   TInt -> cast_int v
   |TReal -> cast_real v
   |TStr -> VStr (string_of_val v)
-  |_ -> raise (Failure ("Can't cast to " ^ string_of_kind t))
+  |_ -> invalid_arg ("Can't cast to " ^ string_of_kind t)
 
-(*
-  eval ::expr -> env_type -> value
-       input -> current_state -> result
+(**
+  Evaluates expr with the given state and returns
+    a value.
 *)
 let rec eval expr state = match expr with
   N a -> VN a
@@ -283,18 +308,15 @@ let rec eval expr state = match expr with
       |a -> invalid_arg (string_of_val a ^ " doesn't have a length.")
     end
 
-(*
-  exec :: expr         -> Val
-      thingToCheck -> What it returns
-  Make sure the expr is typesafe and evaluate it if it is.
+(**
+  Convenience function to wrap eval.
 *)
 let exec a =
   eval a (Hashtbl.create ~hashable:String.hashable ())
 
-(*
-  Main
-  Read from input until eof, parse that as an expr,
-  and print what it evaluates to.
+(**
+  Read source file from src, parse it as an expr,
+    and print what it evaluates to.
 *)
 let main src =
   let inpt = open_in src in
