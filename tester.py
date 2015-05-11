@@ -8,7 +8,7 @@ OUTDIR = "tests/output/"
 class Tests(unittest.TestCase):
 
   def run_HB(self, fname):
-    return os.popen("./HB " + fname).readlines()    
+    return os.popen("./HB " + fname).readlines()
 
   def cat(self, fname):
     f = open(fname)
@@ -18,69 +18,50 @@ class Tests(unittest.TestCase):
 
   def dotest(self, fname):
     assert(self.run_HB(INDIR+fname+".hnb") == self.cat(OUTDIR+fname+".out"))
-  
-  def test_0(self):
-    self.dotest("test0")
 
-  def test_10(self):
-    self.dotest("test10")
+  def test_arith(self):
+    self.dotest("arith")
+    self.dotest("arith2")
+    self.dotest("div")
 
-  def test_11(self):
-    self.dotest("test11")
+  def test_func(self):
+    self.dotest("func1")
+    self.dotest("func2")
 
-  def test_12(self):
-    self.dotest("test12")
+  def test_scope(self):
+    self.dotest("scope")
+    self.dotest("scope2")
 
-  def test_13(self):
-    self.dotest("test13")
-
-  def test_14(self):
-    self.dotest("test14")
-
-  def test_15(self):
-    self.dotest("test15")
+  def test_fac(self):
+    self.dotest("fac")
 
   def test_16(self):
     self.dotest("test16")
 
-  def test_17(self):
-    self.dotest("test17")
+  def test_helloworld(self):
+    self.dotest("helloworld")
 
-  def test_19(self):
-    self.dotest("test19")
+  def test_while(self):
+    self.dotest("while")
 
-  def test_1(self):
-    self.dotest("test1")
+  def test_if(self):
+    self.dotest("ifor")
+    self.dotest("if2")
+    self.dotest("if3")
 
-  def test_2(self):
-    self.dotest("test2")
+  def test_casts(self):
+    self.dotest("boolcasts")
 
-  def test_21(self):
-    self.dotest("test21")
+  def test_seq(self):
+    self.dotest("seq")
 
-  def test_22(self):
-    self.dotest("test22")
+  def test_arr(self):
+    self.dotest("index")
+    self.dotest("set")
+    self.dotest("len")
 
-  def test_23(self):
-    self.dotest("test23")
-
-  def test_24(self):
-    self.dotest("test24")
-
-  def test_3(self):
-    self.dotest("test3")
-
-  def test_4(self):
-    self.dotest("test4")
-
-  def test_5(self):
-    self.dotest("test5")
-
-  def test_6(self):
-    self.dotest("test6")
-
-  def test_7(self):
-    self.dotest("test7")
+  def test_concat(self):
+    self.dotest("concat")
 
   def test_9(self):
     self.dotest("test9")
@@ -88,8 +69,9 @@ class Tests(unittest.TestCase):
   def test_qsort(self):
     self.dotest("qsort")
 
-  def test_argOrder(self):
+  def test_args(self):
     self.dotest("argOrder")
+    self.dotest("multiarg")
 
 if __name__ == '__main__':
   unittest.main()

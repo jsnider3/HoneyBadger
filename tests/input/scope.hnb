@@ -1,6 +1,6 @@
 {
   n = 3;
-  f = fun x : Int (n);
+  f = fun x : (n);
   n = 4;
   f(2)
 }
