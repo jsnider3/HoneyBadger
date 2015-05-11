@@ -30,4 +30,4 @@ lexer.ml: lexer.mll
 	ocamllex lexer.mll
 
 clean:
-	@rm -r docs HB *.3o ocamldoc.* *.o *.cmi *.cmx lexer.ml parser.ml parser.mli 2>/dev/null || true
+	@rm HB *.3o ocamldoc.* *.o *.cmi *.cmx lexer.ml parser.ml parser.mli 2>/dev/null || true

@@ -20,9 +20,10 @@
 %token LPAREN RPAREN LBRACK RBRACK LCURL RCURL
 %token EOF
 
-%left PLUS MINUS        /* lowest precedence */
-%left TIMES DIVIDE      /* medium precedence */
-%nonassoc UMINUS        /* highest precedence */
+%left PLUS MINUS OR        /* lowest precedence */
+%left TIMES DIVIDE AND      /* medium precedence */
+%left EQUAL NEQ LESS GRE LEQ GEQ
+%nonassoc UMINUS NOT        /* highest precedence */
 
 %start <Defs.expr> main
 
@@ -88,7 +89,7 @@ exp:
 | e1 = exp AND e2 = exp
     { And(e1, e2) }
 | e1 = exp NEQ e2 = exp
-    { Not(And(e1, e2)) }
+    { Not(Equal(e1, e2)) }
 | e1 = exp LESS e2 = exp
     { Less(e1, e2) }
 | e1 = exp GRE e2 = exp
@@ -105,6 +106,8 @@ exp:
     { Not e }
 | IF e1 = exp THEN e2 = exp ELSE e3 = exp
     { If(e1, e2, e3) }
+| IF e1 = exp THEN e2 = exp
+    { If(e1, e2, Unit) }
 | WHILE LPAREN e1 = exp RPAREN LCURL e = expr_seq RCURL
     { While(e1, Seq e) }
 | LBRACK e = expr_list RBRACK

@@ -257,7 +257,8 @@ let rec eval expr state = match expr with
   |And (a, b) -> begin
     match (eval a state, eval b state) with
       (VB x, VB y) -> VB(x && y)
-      |something -> invalid_arg "Invalid args for and."
+      |(a, b) -> invalid_arg ("Invalid args for and " ^ string_of_val a ^ " "
+        ^ string_of_val b ^ ".")
     end
   |Or(a, b) -> begin
     match (eval a state, eval b state) with
