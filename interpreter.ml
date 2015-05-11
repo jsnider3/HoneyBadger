@@ -145,6 +145,7 @@ let less a b = match (a, b) with
   casts v to an int.
   For ints, this returns v.
   For floats, this returns v rounded towards zero.
+  For bools, true is 1 and false is 0.
   For strings, this tries to parse v as an int.
   Throws exceptions for other inputs or if v is a string that
     doesn't represent an int.
@@ -152,6 +153,7 @@ let less a b = match (a, b) with
 let cast_int v = match v with
   VN num -> VN num
   |VF num -> VN (Float.to_int num)
+  |VB b -> VN (if b then 1 else 0)
   |VStr s -> VN (Int.of_string s)
   |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to int.")
 
@@ -159,6 +161,7 @@ let cast_int v = match v with
   casts v to a float.
   For ints, this returns v.
   For floats, this returns v.
+  For bools, true is 1.0 and false is 0.0.
   For strings, this tries to parse v as a float.
   Throws exceptions for other inputs or if v is a string that
     doesn't represent a float.
@@ -166,6 +169,7 @@ let cast_int v = match v with
 let cast_real v = match v with
   VN num -> VF (Float.of_int num)
   |VF num -> VF num
+  |VB b -> VF (if b then 1.0 else 0.0)
   |VStr s -> VF (Float.of_string s)
   |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to real.")
 
