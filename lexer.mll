@@ -67,6 +67,8 @@ rule token = parse
     { STRING (String.sub s 1 (String.length s - 2)) }
 | "Int"
     {INT_T}
+| "Bool"
+    {BOOL_T}
 | "String"
     {STRING_T}
 | "Float"

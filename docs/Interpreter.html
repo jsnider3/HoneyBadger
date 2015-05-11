@@ -76,6 +76,15 @@ casts v to a float.
     doesn't represent a float.<br>
 </div>
 
+<pre><span id="VALcast_bool"><span class="keyword">val</span> cast_bool</span> : <code class="type">Defs.value -> Defs.value</code></pre><div class="info ">
+casts v to a bool.
+  For numbers, 0 is false and all others are true.
+  For strings, "true" is true and "false" is false.
+  For arrays and maps, empty is false, otherwise true.
+  Throws exceptions for other inputs or if v is a string that
+    is not "true" or "false".<br>
+</div>
+
 <pre><span id="VALcast"><span class="keyword">val</span> cast</span> : <code class="type">Defs.value -> Defs.kind -> Defs.value</code></pre><div class="info ">
 casts v to type t.
   For casting to int, see cast_int.

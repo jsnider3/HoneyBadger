@@ -170,6 +170,23 @@ let cast_real v = match v with
   |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to real.")
 
 (**
+  casts v to a bool.
+  For numbers, 0 is false and all others are true.
+  For strings, "true" is true and "false" is false.
+  For arrays and maps, empty is false, otherwise true.
+  Throws exceptions for other inputs or if v is a string that
+    is not "true" or "false".
+*)
+let cast_bool v = match v with
+  VB b -> VB b
+  |VN num -> VB (num <> 0)
+  |VF num -> VB (num <> 0.0)
+  |VStr s -> VB (Bool.of_string s)
+  |VArr a -> VB (Array.length a > 0)
+  |VRecord r -> VB (List.length r > 0)
+  |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to bool.")
+
+(**
   casts v to type t.
   For casting to int, see cast_int.
   For casting to float, see cast_float
@@ -179,6 +196,7 @@ let cast_real v = match v with
 let cast v t = match t with
   TInt -> cast_int v
   |TReal -> cast_real v
+  |TBool -> cast_bool v
   |TStr -> VStr (string_of_val v)
   |_ -> invalid_arg ("Can't cast to " ^ string_of_kind t)
 

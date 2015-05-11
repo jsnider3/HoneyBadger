@@ -64,6 +64,9 @@ class Tests(unittest.TestCase):
   def test_23(self):
     self.dotest("test23")
 
+  def test_24(self):
+    self.dotest("test24")
+
   def test_3(self):
     self.dotest("test3")
 
