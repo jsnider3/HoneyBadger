@@ -8,7 +8,10 @@ OUT = "tests/output/"
 class Tests(unittest.TestCase):
 
   def run_HB(self, fname):
-    return os.popen("./HB " + fname).readlines()
+    proc = os.popen("./HB " + fname)
+    lines = proc.readlines()
+    proc.close()
+    return lines
 
   def cat(self, fname):
     f = open(fname)
