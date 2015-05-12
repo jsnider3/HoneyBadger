@@ -72,5 +72,8 @@ class Tests(unittest.TestCase):
   def test_16(self):
     self.dotest("test16")
 
+  def test_dict(self):
+    self.dotest("dict")
+
 if __name__ == '__main__':
   unittest.main()

@@ -1,0 +1,8 @@
+{
+  setmax = fun x : {
+    x["max"] = 5
+  };
+  dic = {"max" : 2};
+  setmax(dic);
+  dic["max"]
+}

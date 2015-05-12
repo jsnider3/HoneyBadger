@@ -76,7 +76,7 @@ and string_of_val arg = match arg with
   |VTop -> "T"
   |VBottom -> "VBottom"
   |VRecord fields -> "{" ^ String.concat ~sep:", " 
-                        (List.map fields (fun field -> fst field ^ " = " ^ 
+                        (List.map !fields (fun field -> fst field ^ " = " ^ 
                           string_of_val (snd field))) ^ "}"
 
 (**
@@ -187,7 +187,7 @@ let cast_bool v = match v with
   |VF num -> VB (num <> 0.0)
   |VStr s -> VB (Bool.of_string s)
   |VArr a -> VB (Array.length a > 0)
-  |VRecord r -> VB (List.length r > 0)
+  |VRecord r -> VB (List.length !r > 0)
   |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to bool.")
 
 (**
@@ -223,7 +223,8 @@ let rec eval expr state = match expr with
   |Arr a -> VArr (Array.map a ~f:(fun e -> eval e state))
   |Unit -> VUnit
   |Equal (a, b) -> VB(eval a state = eval b state)
-  |Record fields -> VRecord (List.Assoc.map fields (fun a -> eval a state))
+  |Record fields -> VRecord (ref (List.Assoc.map fields 
+    (fun a -> eval a state)))
 
 (* Numerical Functions  *)
   |Mul (a, b) -> mul (eval a state) (eval b state)
@@ -272,24 +273,26 @@ let rec eval expr state = match expr with
     end
 
   (* Array functions. *)
-  |Get (index, mylist) -> begin
+  |Get (index, arr) -> begin
     let zero_index = 0 in
-    match eval index state with (* Get the indexth member of list. *)
+    match eval index state with (* Get the indexth member of arr. *)
       (VN num) -> if num < zero_index
-        then invalid_arg "Index out of bounds."
+        then invalid_arg "Negative index."
         else 
           begin
-          match eval mylist state with
-            VArr ls -> ls.(num)
-            |_ -> raise (Failure "Impossible")
+          match eval arr state with
+            VArr ls -> if num < (Array.length ls)
+              then ls.(num)
+              else invalid_arg "Index out of bounds."
+            |_ -> invalid_arg "Attempt to index into non-array"
           end
-      |(VF num) -> eval (Get (N (Float.to_int num), mylist)) state
+      |(VF num) -> eval (Get (N (Float.to_int num), arr)) state
       |_ -> invalid_arg "Not a number index"
     end
   |GetRec (str, a) -> 
     begin
     let VRecord fields = eval a state in
-    match List.Assoc.find fields str with
+    match List.Assoc.find !fields str with
       Some x -> x
       |None -> invalid_arg("Non-existent field " ^ str)
     end
@@ -297,16 +300,17 @@ let rec eval expr state = match expr with
     begin
     match eval (Lookup var) state with
       VRecord fields -> 
-        let v = VRecord (List.Assoc.add fields field (eval expr state)) in
-          Hashtbl.replace state var v; v
-      |_ -> invalid_arg "Impossible"
+        fields := List.Assoc.add !fields field (eval expr state);
+        VRecord fields
+      |v -> invalid_arg ("Can't set field in non-dict " ^ string_of_val v)
     end
   |SetInd (var, ind, expr) -> 
     begin
     match (eval (Lookup var) state, eval ind state) with
       (VArr ls, VN a) -> Array.set ls a (eval expr state); VArr ls
       |(VArr ls, VF a) -> Array.set ls (Float.to_int a) (eval expr state); VArr ls 
-      |k -> invalid_arg "Invalid list index." 
+      |(VArr ls, k) -> invalid_arg ("Invalid array index " ^ string_of_val k)
+      |(k, v) -> invalid_arg ("Index assignment to non array " ^ string_of_val k) 
     end
   |Cast (expr, t) -> cast (eval expr state) t
   |Seq a -> List.fold ~init:(VB true) ~f:(fun _ b -> eval b state) a
