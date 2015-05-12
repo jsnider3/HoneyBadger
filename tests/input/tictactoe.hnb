@@ -1,5 +1,4 @@
 {
-  //Check if 
   print_board = fun b : {
     print(String(b[0]) + "|" + String(b[1]) + "|" + String(b[2]));
     print("-----");
