@@ -1,15 +1,11 @@
 {
   print_board = fun b : {
-    print(String(b[0]) + "|" + String(b[1]) + "|" + String(b[2]));
+    print(b[0] + "|" + b[1] + "|" + b[2]);
     print("-----");
-    print(String(b[3]) + "|" + String(b[4]) + "|" + String(b[5]));
+    print(b[3] + "|" + b[4] + "|" + b[5]);
     print("-----");
-    print(String(b[6]) + "|" + String(b[7]) + "|" + String(b[8]))
+    print(b[6] + "|" + b[7] + "|" + b[8])
   };
-  board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-  print("These are the indices for the positions");
-  print_board(board);
-  xTurn = true;
 
   //Check if the board is completely full.
   isfull = fun b : { 
@@ -35,9 +31,15 @@
     b[2] == b[4] & b[4] == b[6] & b[6] == t |
     b[0] == b[4] & b[4] == b[8] & b[8] == t 
   };
+  
   gameover = fun b : { isfull(b) | haswon(b, "X") | haswon(b, "O")};
+
+  board = ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
+  print("These are the indices for the positions");
+  print_board(board);
+  xTurn = true;
   board = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
-  while (!gameover(board)) {
+  while !gameover(board) {
     print("Where should " + (if xTurn then "X" else "O") + " go?");
     print_board(board);
     spot = Int(readline());
