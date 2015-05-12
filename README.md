@@ -31,3 +31,8 @@ To run a program file, type "HB /path/to/program".
   which is evaluated and whose result is printed. Functions are also
   a single expression and "return" whatever they evaluate to.
 
+* Semicolon usage: Semicolons are used to seperate expr's in sequences,
+  not like in C where they end every line. C's {expr1; expr2; expr3;}
+  is written as {expr1; expr2; expr3} in Honey Badger. This may be changed
+  based on feedback.
+
