@@ -108,7 +108,7 @@ exp:
     { If(e1, e2, e3) }
 | IF e1 = exp THEN e2 = exp
     { If(e1, e2, Unit) }
-| WHILE LPAREN e1 = exp RPAREN LCURL e = expr_seq RCURL
+| WHILE e1 = exp LCURL e = expr_seq RCURL
     { While(e1, Seq e) }
 | LBRACK e = expr_list RBRACK
     { Arr (Array.of_list e) }

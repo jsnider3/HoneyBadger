@@ -10,7 +10,8 @@ type kind = TInt | TReal | TBool | TFunc
   | TUnit | TTop | TBottom | TStr
 
 (**
-  Types that Honey Badger values may belong to.
+  exprs are used by the interpreter to represent the
+  abstract syntax tree parsed from the source file.
 *)
 type expr = N of int | F of float| Add of (expr * expr)
   | Mul of (expr * expr) | Div of (expr * expr)
