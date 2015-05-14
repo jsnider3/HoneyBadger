@@ -128,7 +128,7 @@ type_t:
     { TStr }
 | BOTTOM_T
     { TBottom }
-| UNIT_T
+| LPAREN RPAREN
     { TUnit }
 | FLOAT_T
     { TReal }
