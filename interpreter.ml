@@ -1,4 +1,4 @@
-(** Reference implementation for the Honey Badger
++(** Reference implementation for the Honey Badger
   programming language. *)
 open Core.Std
 open Defs

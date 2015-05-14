@@ -13,7 +13,7 @@
 rule token = parse
 | '\n'
     { Lexing.new_line lexbuf; token lexbuf }
-| [' ' '\t']
+| [' ' '\t']+
     { token lexbuf }
 | "//"[^'\n']*
     { token lexbuf }
@@ -79,8 +79,6 @@ rule token = parse
     {TOP_T}
 | "Bottom"
     {BOTTOM_T}
-| '(' ')'
-    {UNIT_T}
 | "Arr"
     {ARR_T}
 | '+'

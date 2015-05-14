@@ -43,6 +43,7 @@ class Tests(unittest.TestCase):
   def test_func(self):
     self.dotest("func1")
     self.dotest("func2")
+    self.dotest("func3")
     self.dotest("fac")
 
   def test_if(self):

@@ -32,6 +32,8 @@
 main:
 | e = exp EOF
     { e }
+| EOF
+    { Unit } 
 
 exp:
 | i = INT
@@ -76,8 +78,6 @@ exp:
     { e }
 | LPAREN RPAREN
     { Unit }
-| LBRACK RBRACK
-    { Arr (Array.of_list []) }
 | e1 = exp PLUS e2 = exp
     { Add(e1, e2) }
 | e1 = exp MINUS e2 = exp
@@ -138,24 +138,32 @@ type_t:
     { TRecord t }
 
 fields:
+|
+    { [] }
 | v = STRING COLON e = exp
     { [(v, e)] }
 | v = STRING COLON e = exp COMMA vt = fields
     { (v, e) :: vt }
 
 var_typed:
+|
+    { [] }
 | v = STRING COLON e = type_t
     { [(v, e)] }
 | v = STRING COLON e = type_t COMMA vt = var_typed
     { (v, e) :: vt }
 
 var_list:
+|
+    { [] }
 | v = VAR
     { [v] }
 | v = VAR COMMA vs = var_list
     { v :: vs } 
 
 expr_list:
+|
+    { [] }
 | e = exp
     { [e] }
 |e1 = exp COMMA e2 = expr_list
