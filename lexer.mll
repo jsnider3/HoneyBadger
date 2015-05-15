@@ -18,19 +18,21 @@ rule token = parse
 | "//"[^'\n']*
     { token lexbuf }
 | "true"
-    { BOOL true}
+    { BOOL true }
 | "false"
-    { BOOL false}
+    { BOOL false }
 | "while"
-    {WHILE}
+    { WHILE }
 | "if"
-    {IF}
+    { IF }
 | "then"
-    {THEN}
+    { THEN }
 | "else"
-    {ELSE}
+    { ELSE }
+| "for"
+    { FOR }
 | "fun"
-    {FUNC}
+    { FUNC }
 | "print"
     { PRINT }
 | "len"
@@ -38,25 +40,25 @@ rule token = parse
 | "readline" ' '*'('' '*')'
     { READLINE }
 | "=="
-    {EQUAL}
+    { EQUAL }
 | "!="
-    {NEQ}
+    { NEQ }
 | "<"
-    {LESS}
+    { LESS }
 | "<="
-    {LEQ}
+    { LEQ }
 | ">"
-    {GRE}
+    { GRE }
 | ">="
-    {GEQ}
+    { GEQ }
 | "="
-    {ASSIGN}
+    { ASSIGN }
 | "&"
-    {AND}
+    { AND }
 | "|"
-    {OR}
+    { OR }
 | "!"
-    {NOT}
+    { NOT }
 | ['0'-'9']+ as i
     { INT (int_of_string i) }
 | ['0'-'9']*'.'['0'-'9']+ as f
@@ -66,21 +68,21 @@ rule token = parse
 | '"' [^'"']* '"' as s
     { STRING (String.sub s 1 (String.length s - 2)) }
 | "Int"
-    {INT_T}
+    { INT_T }
 | "Bool"
-    {BOOL_T}
+    { BOOL_T }
 | "String"
-    {STRING_T}
+    { STRING_T }
 | "Float"
-    {FLOAT_T}
+    { FLOAT_T }
 | "Record"
-    {RECORD_T}
+    { RECORD_T }
 | "Top"
-    {TOP_T}
+    { TOP_T }
 | "Except"
-    {EXCEPT_T}
+    { EXCEPT_T }
 | "Arr"
-    {ARR_T}
+    { ARR_T }
 | '+'
     { PLUS }
 | '-'

@@ -70,6 +70,7 @@ class Tests(unittest.TestCase):
 
   def test_while(self):
     self.dotest("while")
+    self.dotest("forloop")
 
   def test_9(self):
     self.dotest("test9")

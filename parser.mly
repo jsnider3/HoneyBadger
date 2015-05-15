@@ -14,9 +14,9 @@
 %token PRINT READLINE LEN
 %token SEMI COMMA COLON ASSIGN
 %token EQUAL NOT AND OR NEQ LESS GRE LEQ GEQ
-%token IF THEN ELSE WHILE
+%token IF THEN ELSE WHILE FOR
 %token INT_T FLOAT_T BOOL_T STRING_T RECORD_T
-%token TOP_T EXCEPT_T UNIT_T ARR_T
+%token TOP_T EXCEPT_T ARR_T
 %token LPAREN RPAREN LBRACK RBRACK LCURL RCURL
 %token EOF
 
@@ -112,6 +112,8 @@ exp:
     { If(e1, e2, Unit) }
 | WHILE e1 = exp LCURL e = expr_seq RCURL
     { While(e1, Seq e) }
+| FOR LPAREN e1 = exp SEMI e2 = exp SEMI e3 = exp RPAREN b = exp
+    { Seq (e1 :: [While(e2, Seq (b :: [e3]))]) }
 | LBRACK e = expr_list RBRACK
     { Arr (Array.of_list e) }
 | LCURL e = expr_seq RCURL
