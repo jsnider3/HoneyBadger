@@ -7,7 +7,7 @@
 *)
 type kind = TInt | TReal | TBool | TFunc 
   | TArr  | TRecord of (string * kind) list
-  | TUnit | TTop | TBottom | TStr
+  | TUnit | TTop | TExcept | TStr
 
 (**
   exprs are used by the interpreter to represent the
@@ -25,11 +25,11 @@ type expr = N of int | F of float| Add of (expr * expr)
   | Cast of (expr * kind)
   | Str of string | Readline | Print of expr
   | Seq of expr list | Set of (string * expr) | Lookup of string 
-  | While of (expr * expr) | Top | Bottom
+  | While of (expr * expr) | Top | Except of expr
 
 (**
   Types of values that are possible in Honey Badger.
 *)
 type value = VB of bool | VArr of value array | VUnit | VN of int 
   | VF of float | VLam of (string list * expr) | VStr of string 
-  | VRecord of (string * value) list ref | VTop | VBottom
+  | VRecord of (string * value) list ref | VTop | VExcept of value

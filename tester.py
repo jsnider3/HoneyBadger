@@ -40,6 +40,10 @@ class Tests(unittest.TestCase):
   def test_casts(self):
     self.dotest("boolcasts")
 
+  def test_excepts(self):
+    self.dotest("except")
+    self.dotest("except1")
+
   def test_func(self):
     self.dotest("func1")
     self.dotest("func2")

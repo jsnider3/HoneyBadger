@@ -84,7 +84,7 @@ Provides types used throughout the interpreter.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTkind.TBottom"><span class="constructor">TBottom</span></span></code></td>
+<code><span id="TYPEELTkind.TExcept"><span class="constructor">TExcept</span></span></code></td>
 
 </tr>
 <tr>
@@ -329,7 +329,7 @@ Types that Honey Badger values may belong to.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTexpr.Bottom"><span class="constructor">Bottom</span></span></code></td>
+<code><span id="TYPEELTexpr.Except"><span class="constructor">Except</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEexpr">expr</a></code></code></td>
 
 </tr></table>
 
@@ -393,7 +393,7 @@ exprs are used by the interpreter to represent the
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTvalue.VRecord"><span class="constructor">VRecord</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Defs.html#TYPEvalue">value</a>) list</code></code></td>
+<code><span id="TYPEELTvalue.VRecord"><span class="constructor">VRecord</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Defs.html#TYPEvalue">value</a>) list Pervasives.ref</code></code></td>
 
 </tr>
 <tr>
@@ -407,7 +407,7 @@ exprs are used by the interpreter to represent the
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTvalue.VBottom"><span class="constructor">VBottom</span></span></code></td>
+<code><span id="TYPEELTvalue.VExcept"><span class="constructor">VExcept</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEvalue">value</a></code></code></td>
 
 </tr></table>
 

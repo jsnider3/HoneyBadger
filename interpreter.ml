@@ -14,7 +14,7 @@ let rec string_of_kind arg = match arg with
   |TRecord a -> "Record"
   |TUnit -> "()"
   |TTop -> "T"
-  |TBottom -> "Bottom"
+  |TExcept -> "Except"
 
 (** Return the abstract syntax tree rooted at arg represented
   as a string. *)
@@ -45,7 +45,7 @@ let rec string_of_expr arg = match arg with
                 ^ "]"
   |Unit -> "()"
   |Top -> "T"
-  |Bottom -> "Bottom"
+  |Except a -> "Except " ^ string_of_expr a
   |Get (a, b) -> "Get(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |GetRec (a, b) -> "GetRec(" ^ a ^ "," ^ string_of_expr b ^ ")"
   |SetRec (a, b, c) -> a ^ "[" ^ b ^ "] <- " ^ string_of_expr c 
@@ -74,7 +74,7 @@ and string_of_val arg = match arg with
                        ^ "]"
   |VUnit -> "()"
   |VTop -> "T"
-  |VBottom -> "VBottom"
+  |VExcept a -> "VExcept"
   |VRecord fields -> "{" ^ String.concat ~sep:", " 
                         (List.map !fields (fun field -> fst field ^ " = " ^ 
                           string_of_val (snd field))) ^ "}"
@@ -207,7 +207,6 @@ let cast v t = match (t, v) with
   |(TUnit, VUnit) -> v
   |(TArr, VArr _) -> v
   |(TTop, _) -> v
-  |(TBottom, _) -> v
   |_ -> invalid_arg ("Can't cast to " ^ string_of_kind t)
 
 (**
@@ -332,7 +331,9 @@ let rec eval expr state = match expr with
     in
       eval_loop ()
   |Top -> VTop
-  |Bottom -> invalid_arg "Attempt to eval Bottom"
+  |Except a -> let msg = "Exception: " ^ string_of_val (eval a state) in
+    print_endline msg;
+    raise Exit
   |Print e -> print_endline (string_of_val (eval e state)); VUnit
   |Readline -> VStr (input_line stdin)
   |Len e -> begin
@@ -362,6 +363,7 @@ let main src =
       printf "%s\n" (string_of_val (exec ast));
       In_channel.close inpt;
   with
+  | Pervasives.Exit -> ()
   | Lexer.Error msg ->
 	  fprintf stderr "%s%!" msg
   | Parser.Error -> let pos = Lexing.lexeme_start_p linebuf in

@@ -77,8 +77,8 @@ rule token = parse
     {RECORD_T}
 | "Top"
     {TOP_T}
-| "Bottom"
-    {BOTTOM_T}
+| "Except"
+    {EXCEPT_T}
 | "Arr"
     {ARR_T}
 | '+'

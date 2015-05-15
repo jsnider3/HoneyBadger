@@ -16,7 +16,7 @@
 %token EQUAL NOT AND OR NEQ LESS GRE LEQ GEQ
 %token IF THEN ELSE WHILE
 %token INT_T FLOAT_T BOOL_T STRING_T RECORD_T
-%token TOP_T BOTTOM_T UNIT_T ARR_T
+%token TOP_T EXCEPT_T UNIT_T ARR_T
 %token LPAREN RPAREN LBRACK RBRACK LCURL RCURL
 %token EOF
 
@@ -50,6 +50,8 @@ exp:
     { Len e }
 | READLINE
     { Readline }
+| EXCEPT_T LPAREN e = exp RPAREN
+    { Except e }
 | v = VAR ASSIGN e = exp
     { Set(v, e) }
 | v = VAR LBRACK f = STRING RBRACK ASSIGN e = exp
@@ -126,8 +128,6 @@ type_t:
     { TTop }
 | STRING_T
     { TStr }
-| BOTTOM_T
-    { TBottom }
 | LPAREN RPAREN
     { TUnit }
 | FLOAT_T
