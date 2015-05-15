@@ -6,13 +6,23 @@ language, with dictionaries and arrays as language builtins.
 
 # Requirements
 Honey Badger currently depends on ocaml, ocamldoc, opam,
-JaneStreet's core library, and menhir. The commands listed under
-install in the .travis.yml file can tell you what to do to get them
-on Ubuntu.
+JaneStreet's core library, and menhir. On an up-to-date Ubuntu
+system you should be able to get the dependencies by running
+
+```
+sudo add-apt-repository -y ppa:avsm/ppa
+sudo apt-get update
+sudo apt-get install -y ocaml ocaml-doc opam  \
+     ocaml-native-compilers menhir
+opam init -n
+eval `opam config env`
+opam install core -y
+```
 
 # Usage
-After cloning this repository, type make to create the program "HB".
-To run a program file, type "HB /path/to/program".
+After cloning this repository, type `make` to create the program "HB".
+To run a program file, type `./HB /path/to/program`.
+tests/input/tictactoe.hnb is a good example of proper syntax.
 
 # Distinguishing features of HB.
 
