@@ -1,8 +1,17 @@
 (** Reference implementation for the Honey Badger
   programming language. *)
+
 open Core.Std
 open Defs
 open Printf
+
+(**
+  HBException represents errors encountered throwable and
+  catchable by the user.
+  The two arguments they take are the exception's name and
+    message.
+*)
+exception HBException of string * string
 
 let rec string_of_kind arg = match arg with
   TInt -> "Int"
@@ -45,12 +54,12 @@ let rec string_of_expr arg = match arg with
                 ^ "]"
   |Unit -> "()"
   |Top -> "T"
-  |Except a -> "Except " ^ string_of_expr a
+  |Except (t, m) -> t  ^ ": " ^ string_of_expr m
   |Get (a, b) -> "Get(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |GetRec (a, b) -> "GetRec(" ^ a ^ "," ^ string_of_expr b ^ ")"
   |SetRec (a, b, c) -> a ^ "[" ^ b ^ "] <- " ^ string_of_expr c 
   |SetInd (a, b, c) -> a ^ "[" ^ string_of_expr b ^ "] <- " ^ string_of_expr c 
-  |Cast (a, b) -> "Cast(" ^ string_of_expr a ^ ", kind)"
+  |Cast (a, b) -> "Cast(" ^ string_of_expr a ^ string_of_kind b
   |Lookup a -> "Lookup " ^ a
   |While (a, b) -> "While(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
   |Record fields -> "Record[" ^ String.concat ~sep:", " 
@@ -59,6 +68,8 @@ let rec string_of_expr arg = match arg with
   |Seq a -> "Sequence[" ^ String.concat ~sep:"; " (List.map a (string_of_expr)) 
               ^ "]"
   |Set (s, x) -> "Set (" ^ s ^ ", " ^ string_of_expr x ^ ")"
+  |Try (s, x) -> "Try (" ^ string_of_expr s ^ ", [" ^ String.concat ~sep:", "
+    (List.map x (fun (c, b) -> "catch " ^ c ^ ": " ^ string_of_expr b )) ^ "])"
 
 (**
   Represent a value as a human-readable string.
@@ -74,10 +85,15 @@ and string_of_val arg = match arg with
                        ^ "]"
   |VUnit -> "()"
   |VTop -> "T"
-  |VExcept a -> "VExcept"
   |VRecord fields -> "{" ^ String.concat ~sep:", " 
                         (List.map !fields (fun field -> fst field ^ " = " ^ 
                           string_of_val (snd field))) ^ "}"
+
+(**
+  Throws an HB TypeException with the given message.
+*)
+
+let type_exn msg = raise (HBException("TypeException", msg))
 
 (**
   Return a * b.
@@ -88,7 +104,7 @@ let mul a b = match (a, b) with
   |(VN x, VF y) -> VF (Float.of_int x *. y)
   |(VF x, VN y) -> VF(x *. Float.of_int y)
   |(VF x, VF y) -> VF(x *. y)
-  |_ -> invalid_arg "Invalid args for multiplication."
+  |_ -> type_exn "Invalid args for multiplication."
 
 (**
   Return a / b.
@@ -99,7 +115,7 @@ let div a b = match (a, b) with
   |(VN x, VF y) -> VF (Float.of_int x /. y)
   |(VF x, VN y) -> VF(x /. Float.of_int y)
   |(VF x, VF y) -> VF(x /. y)
-  |_ -> invalid_arg "Invalid args for multiplication."
+  |_ -> type_exn "Invalid args for division."
 
 (**
   Return a + b.
@@ -117,7 +133,7 @@ let add a b = match (a, b) with
   |(VUnit, VArr s) -> VArr s
   |(VArr f, VUnit) -> VArr f
   |(VStr f, VStr s) -> VStr (f ^ s)
-  |_ -> invalid_arg "Invalid args for addition."
+  |_ -> type_exn "Invalid args for addition."
 
 (**
   Return a - b.
@@ -128,7 +144,7 @@ let sub a b = match (a, b) with
   |(VN x, VF y) -> VF (Float.of_int x -. y)
   |(VF x, VN y) -> VF(x -. Float.of_int y)
   |(VF x, VF y) -> VF(x -. y)
-  |_ -> invalid_arg "Invalid args for subtraction."
+  |_ -> type_exn "Invalid args for subtraction."
 
 (**
   Return a < b.
@@ -139,7 +155,7 @@ let less a b = match (a, b) with
   |(VN x, VF y) -> VB (Float.of_int x < y)
   |(VF x, VN y) -> VB(x < Float.of_int y)
   |(VF x, VF y) -> VB(x < y)
-  |_ -> invalid_arg "Invalid args for comparison."
+  |_ -> type_exn "Invalid args for comparison."
 
 (**
   casts v to an int.
@@ -155,7 +171,7 @@ let cast_int v = match v with
   |VF num -> VN (Float.to_int num)
   |VB b -> VN (if b then 1 else 0)
   |VStr s -> VN (Int.of_string s)
-  |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to int.")
+  |_ -> type_exn ("Can't cast " ^ string_of_val v ^ " to int.")
 
 (**
   casts v to a float.
@@ -171,7 +187,7 @@ let cast_real v = match v with
   |VF num -> VF num
   |VB b -> VF (if b then 1.0 else 0.0)
   |VStr s -> VF (Float.of_string s)
-  |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to real.")
+  |_ -> type_exn ("Can't cast " ^ string_of_val v ^ " to real.")
 
 (**
   casts v to a bool.
@@ -188,7 +204,7 @@ let cast_bool v = match v with
   |VStr s -> VB (Bool.of_string s)
   |VArr a -> VB (Array.length a > 0)
   |VRecord r -> VB (List.length !r > 0)
-  |_ -> invalid_arg ("Can't cast " ^ string_of_val v ^ " to bool.")
+  |_ -> type_exn ("Can't cast " ^ string_of_val v ^ " to bool.")
 
 (**
   casts v to type t.
@@ -207,7 +223,7 @@ let cast v t = match (t, v) with
   |(TUnit, VUnit) -> v
   |(TArr, VArr _) -> v
   |(TTop, _) -> v
-  |_ -> invalid_arg ("Can't cast to " ^ string_of_kind t)
+  |_ -> type_exn ("Can't cast to " ^ string_of_kind t)
 
 (**
   Evaluates expr with the given state and returns
@@ -242,9 +258,9 @@ let rec eval expr state = match expr with
             List.iter args (fun (s,v) -> Hashtbl.replace newscope s v);
             eval body newscope
         else
-          invalid_arg ("Function call with wrong number of args.")
+          type_exn ("Function call with wrong number of args.")
         end
-      |_ -> invalid_arg "Can't apply on non-lambda."
+      |_ -> type_exn "Can't apply on non-lambda."
     end
 
   (* Boolean Functions *)
@@ -252,23 +268,23 @@ let rec eval expr state = match expr with
     match eval condition state with
       VB true -> eval thenCase state
       |VB false -> eval elseCase state
-      |_ -> invalid_arg "Invalid condition for if."
+      |_ -> type_exn "Invalid condition for if."
     end
   |And (a, b) -> begin
     match (eval a state, eval b state) with
       (VB x, VB y) -> VB(x && y)
-      |(a, b) -> invalid_arg ("Invalid args for and " ^ string_of_val a ^ " "
+      |(a, b) -> type_exn ("Invalid args for and " ^ string_of_val a ^ " "
         ^ string_of_val b ^ ".")
     end
   |Or(a, b) -> begin
     match (eval a state, eval b state) with
       (VB x, VB y) -> VB(x || y)
-      |_ -> invalid_arg "Invalid args for or."
+      |_ -> type_exn "Invalid args for or."
     end
   |Not a ->begin
     match eval a state with
       VB x -> VB(not x)
-      |_ -> invalid_arg "Invalid arg for not."
+      |_ -> type_exn "Invalid arg for not."
     end
 
   (* Array functions. *)
@@ -276,24 +292,27 @@ let rec eval expr state = match expr with
     let zero_index = 0 in
     match eval index state with (* Get the indexth member of arr. *)
       (VN num) -> if num < zero_index
-        then invalid_arg "Negative index."
+        then raise ( HBException("OutOfBoundsException",
+          "Negative index " ^ Int.to_string num ^ "."))
         else 
           begin
           match eval arr state with
             VArr ls -> if num < (Array.length ls)
               then ls.(num)
-              else invalid_arg "Index out of bounds."
-            |_ -> invalid_arg "Attempt to index into non-array"
+              else raise (HBException("OutOfBoundsException",
+                "Out of bounds " ^ Int.to_string num ^ "."))
+            |_ -> type_exn "Attempt to index into non-array"
           end
       |(VF num) -> eval (Get (N (Float.to_int num), arr)) state
-      |_ -> invalid_arg "Not a number index"
+      |a -> type_exn ("Not a number index " ^ string_of_val a ^ ".")
     end
   |GetRec (str, a) -> 
     begin
     let VRecord fields = eval a state in
     match List.Assoc.find !fields str with
       Some x -> x
-      |None -> invalid_arg("Non-existent field " ^ str)
+      |None -> raise (HBException ("KeyException",
+        "Dict does not contain a " ^ str))
     end
   |SetRec (var, field, expr) -> 
     begin
@@ -301,15 +320,16 @@ let rec eval expr state = match expr with
       VRecord fields -> 
         fields := List.Assoc.add !fields field (eval expr state);
         VRecord fields
-      |v -> invalid_arg ("Can't set field in non-dict " ^ string_of_val v)
+      |v -> type_exn ("Can't set field in non-dict " ^ string_of_val v)
     end
   |SetInd (var, ind, expr) -> 
     begin
     match (eval (Lookup var) state, eval ind state) with
       (VArr ls, VN a) -> Array.set ls a (eval expr state); VArr ls
       |(VArr ls, VF a) -> Array.set ls (Float.to_int a) (eval expr state); VArr ls 
-      |(VArr ls, k) -> invalid_arg ("Invalid array index " ^ string_of_val k)
-      |(k, v) -> invalid_arg ("Index assignment to non array " ^ string_of_val k) 
+      |(VArr ls, k) -> 
+        type_exn ("Invalid array index " ^ string_of_val k)
+      |(k, v) -> type_exn ("Index assignment to non array " ^ string_of_val k)
     end
   |Cast (expr, t) -> cast (eval expr state) t
   |Seq a -> List.fold ~init:(VB true) ~f:(fun _ b -> eval b state) a
@@ -319,7 +339,7 @@ let rec eval expr state = match expr with
     begin
     match Hashtbl.find state name with
       Some x -> x
-      |None -> invalid_arg ("Undefined var " ^ name)
+      |None -> raise (HBException("ValueException", "Undefined var " ^ name))
     end
   |While (guard, body) -> 
     let rec eval_loop () =
@@ -327,20 +347,27 @@ let rec eval expr state = match expr with
         VB true -> eval body state;
           eval_loop ()
         |VB false -> VUnit
-        |_-> invalid_arg "Loop guard non-bool." 
+        |v -> type_exn "Loop guard non bool"
     in
       eval_loop ()
   |Top -> VTop
-  |Except a -> let msg = "Exception: " ^ string_of_val (eval a state) in
-    print_endline msg;
-    raise Exit
+  |Except (name, a) -> let msg = string_of_val (eval a state) in
+    raise (HBException (name, msg))
   |Print e -> print_endline (string_of_val (eval e state)); VUnit
   |Readline -> VStr (input_line stdin)
+  |Try(e, catches) ->
+    begin
+    try eval e state
+    with
+    | HBException (t, m) -> match List.Assoc.find catches t with
+      Some x -> eval x state
+      |None -> raise(HBException (t, m))
+    end
   |Len e -> begin
     match eval e state with
       VArr l -> VN (Array.length l)
       |VStr s -> VN (String.length s)
-      |a -> invalid_arg (string_of_val a ^ " doesn't have a length.")
+      |a -> type_exn (string_of_val a ^ " doesn't have a length.")
     end
 
 (**
@@ -363,7 +390,7 @@ let main src =
       printf "%s\n" (string_of_val (exec ast));
       In_channel.close inpt;
   with
-  | Pervasives.Exit -> ()
+  | HBException (tag, msg) -> print_endline (tag ^ ": " ^ msg)
   | Lexer.Error msg ->
 	  fprintf stderr "%s%!" msg
   | Parser.Error -> let pos = Lexing.lexeme_start_p linebuf in

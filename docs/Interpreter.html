@@ -7,6 +7,7 @@
 <link rel="previous" href="Defs.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Defs" rel="Chapter" href="Defs.html">
@@ -24,6 +25,14 @@ Reference implementation for the Honey Badger
 </div>
 <hr width="100%">
 
+<pre><span id="EXCEPTIONHBException"><span class="keyword">exception</span> HBException</span> <span class="keyword">of</span> <code class="type">string * string</code></pre>
+<div class="info ">
+HBException represents errors encountered throwable and
+  catchable by the user.
+  The two arguments they take are the exception's name and
+    message.<br>
+</div>
+
 <pre><span id="VALstring_of_kind"><span class="keyword">val</span> string_of_kind</span> : <code class="type"><a href="Defs.html#TYPEkind">Defs.kind</a> -> string</code></pre>
 <pre><span id="VALstring_of_expr"><span class="keyword">val</span> string_of_expr</span> : <code class="type"><a href="Defs.html#TYPEexpr">Defs.expr</a> -> Core.Std.String.t</code></pre><div class="info ">
 Return the abstract syntax tree rooted at arg represented
@@ -33,7 +42,10 @@ Return the abstract syntax tree rooted at arg represented
 <pre><span id="VALstring_of_val"><span class="keyword">val</span> string_of_val</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> Core.Std.String.t</code></pre><div class="info ">
 Represent a value as a human-readable string.<br>
 </div>
+<br>
+Throws an HB TypeException with the given message.<br>
 
+<pre><span id="VALtype_exn"><span class="keyword">val</span> type_exn</span> : <code class="type">string -> 'a</code></pre>
 <pre><span id="VALmul"><span class="keyword">val</span> mul</span> : <code class="type"><a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a> -> <a href="Defs.html#TYPEvalue">Defs.value</a></code></pre><div class="info ">
 Return a * b.
   Throws an exception in either a or b is a non-number.<br>

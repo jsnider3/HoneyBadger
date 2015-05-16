@@ -14,7 +14,7 @@
 %token PRINT READLINE LEN
 %token SEMI COMMA COLON ASSIGN
 %token EQUAL NOT AND OR NEQ LESS GRE LEQ GEQ
-%token IF THEN ELSE WHILE FOR
+%token IF THEN ELSE WHILE FOR TRY CATCH
 %token INT_T FLOAT_T BOOL_T STRING_T RECORD_T
 %token TOP_T EXCEPT_T ARR_T
 %token LPAREN RPAREN LBRACK RBRACK LCURL RCURL
@@ -51,7 +51,9 @@ exp:
 | READLINE
     { Readline }
 | EXCEPT_T LPAREN e = exp RPAREN
-    { Except e }
+    { Except ("RuntimeException", e) }
+| EXCEPT_T LPAREN t = STRING COMMA e = exp RPAREN
+    { Except (t, e) }
 | v = VAR ASSIGN e = exp
     { Set(v, e) }
 | v = VAR LBRACK f = STRING RBRACK ASSIGN e = exp
@@ -80,6 +82,8 @@ exp:
     { e }
 | LPAREN RPAREN
     { Unit }
+| TRY LCURL e = expr_seq RCURL c = catch_blocks
+    { Try(Seq e, c) }
 | e1 = exp PLUS e2 = exp
     { Add(e1, e2) }
 | e1 = exp MINUS e2 = exp
@@ -138,6 +142,12 @@ type_t:
     { TArr }
 |RECORD_T LBRACK t = var_typed RBRACK
     { TRecord t }
+
+catch_blocks:
+| CATCH s = STRING COLON e = exp
+    { [(s, e)] }
+| CATCH s = STRING COLON e = exp c = catch_blocks
+    { (s, e) :: c }
 
 fields:
 |

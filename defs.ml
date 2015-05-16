@@ -25,11 +25,12 @@ type expr = N of int | F of float| Add of (expr * expr)
   | Cast of (expr * kind)
   | Str of string | Readline | Print of expr
   | Seq of expr list | Set of (string * expr) | Lookup of string 
-  | While of (expr * expr) | Top | Except of expr
+  | While of (expr * expr) | Top | Except of string * expr
+  | Try of (expr * ((string * expr) list))
 
 (**
   Types of values that are possible in Honey Badger.
 *)
 type value = VB of bool | VArr of value array | VUnit | VN of int 
   | VF of float | VLam of (string list * expr) | VStr of string 
-  | VRecord of (string * value) list ref | VTop | VExcept of value
+  | VRecord of (string * value) list ref | VTop

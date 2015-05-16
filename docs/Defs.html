@@ -7,6 +7,7 @@
 <link rel="next" href="Interpreter.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Defs" rel="Chapter" href="Defs.html">
@@ -329,7 +330,14 @@ Types that Honey Badger values may belong to.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTexpr.Except"><span class="constructor">Except</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEexpr">expr</a></code></code></td>
+<code><span id="TYPEELTexpr.Except"><span class="constructor">Except</span></span> <span class="keyword">of</span> <code class="type">string * <a href="Defs.html#TYPEexpr">expr</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Try"><span class="constructor">Try</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * (string * <a href="Defs.html#TYPEexpr">expr</a>) list)</code></code></td>
 
 </tr></table>
 
@@ -401,13 +409,6 @@ exprs are used by the interpreter to represent the
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
 <code><span id="TYPEELTvalue.VTop"><span class="constructor">VTop</span></span></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTvalue.VExcept"><span class="constructor">VExcept</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEvalue">value</a></code></code></td>
 
 </tr></table>
 

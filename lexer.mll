@@ -31,6 +31,10 @@ rule token = parse
     { ELSE }
 | "for"
     { FOR }
+| "try"
+    { TRY }
+| "catch"
+    { CATCH }
 | "fun"
     { FUNC }
 | "print"
@@ -66,7 +70,7 @@ rule token = parse
 | ['a'-'z']['a' - 'z' '0'-'9' '_' 'A' - 'Z']* as v
     { VAR v }
 | '"' [^'"']* '"' as s
-    { STRING (String.sub s 1 (String.length s - 2)) }
+    {  STRING (String.sub s 1 (String.length s - 2)) }
 | "Int"
     { INT_T }
 | "Bool"

@@ -43,6 +43,7 @@ class Tests(unittest.TestCase):
   def test_excepts(self):
     self.dotest("except")
     self.dotest("except1")
+    self.dotest("trycatch")
 
   def test_func(self):
     self.dotest("func1")

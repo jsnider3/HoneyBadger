@@ -1,0 +1,3 @@
+try { Except("If you see this, it means try catch is broken.") }
+catch "FAIL": "We caught the wrong thing!"
+catch "RuntimeException": "Successfully caught!"
