@@ -1,0 +1,419 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="next" href="Interpreter.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Defs" rel="Chapter" href="Defs.html">
+<link title="Interpreter" rel="Chapter" href="Interpreter.html"><title>Defs</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Interpreter.html" title="Interpreter">Next</a>
+</div>
+<h1>Module <a href="type_Defs.html">Defs</a></h1>
+
+<pre><span class="keyword">module</span> Defs: <code class="code">sig</code> <a href="Defs.html">..</a> <code class="code">end</code></pre><div class="info module top">
+Provides types used throughout the interpreter.<br>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEkind"><span class="keyword">type</span> <code class="type"></code>kind</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TInt"><span class="constructor">TInt</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TReal"><span class="constructor">TReal</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TBool"><span class="constructor">TBool</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TFunc"><span class="constructor">TFunc</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TArr"><span class="constructor">TArr</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TRecord"><span class="constructor">TRecord</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Defs.html#TYPEkind">kind</a>) list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TUnit"><span class="constructor">TUnit</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TTop"><span class="constructor">TTop</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TExcept"><span class="constructor">TExcept</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTkind.TStr"><span class="constructor">TStr</span></span></code></td>
+
+</tr></table>
+
+<div class="info ">
+Types that Honey Badger values may belong to.<br>
+</div>
+
+
+<pre><code><span id="TYPEexpr"><span class="keyword">type</span> <code class="type"></code>expr</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.N"><span class="constructor">N</span></span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.F"><span class="constructor">F</span></span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Add"><span class="constructor">Add</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Mul"><span class="constructor">Mul</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Div"><span class="constructor">Div</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Sub"><span class="constructor">Sub</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Less"><span class="constructor">Less</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.And"><span class="constructor">And</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Or"><span class="constructor">Or</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Not"><span class="constructor">Not</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEexpr">expr</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.If"><span class="constructor">If</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Equal"><span class="constructor">Equal</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.B"><span class="constructor">B</span></span> <span class="keyword">of</span> <code class="type">bool</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Lam"><span class="constructor">Lam</span></span> <span class="keyword">of</span> <code class="type">(string list * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.App"><span class="constructor">App</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a> list)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Arr"><span class="constructor">Arr</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEexpr">expr</a> array</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Len"><span class="constructor">Len</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEexpr">expr</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Unit"><span class="constructor">Unit</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Get"><span class="constructor">Get</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Record"><span class="constructor">Record</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Defs.html#TYPEexpr">expr</a>) list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.GetRec"><span class="constructor">GetRec</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.SetRec"><span class="constructor">SetRec</span></span> <span class="keyword">of</span> <code class="type">string * string * <a href="Defs.html#TYPEexpr">expr</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.SetInd"><span class="constructor">SetInd</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Cast"><span class="constructor">Cast</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEkind">kind</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Str"><span class="constructor">Str</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Readline"><span class="constructor">Readline</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Print"><span class="constructor">Print</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEexpr">expr</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Seq"><span class="constructor">Seq</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEexpr">expr</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Set"><span class="constructor">Set</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Lookup"><span class="constructor">Lookup</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.While"><span class="constructor">While</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Top"><span class="constructor">Top</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Except"><span class="constructor">Except</span></span> <span class="keyword">of</span> <code class="type">string * <a href="Defs.html#TYPEexpr">expr</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexpr.Try"><span class="constructor">Try</span></span> <span class="keyword">of</span> <code class="type">(<a href="Defs.html#TYPEexpr">expr</a> * (string * <a href="Defs.html#TYPEexpr">expr</a>) list)</code></code></td>
+
+</tr></table>
+
+<div class="info ">
+exprs are used by the interpreter to represent the
+  abstract syntax tree parsed from the source file.<br>
+</div>
+
+
+<pre><code><span id="TYPEvalue"><span class="keyword">type</span> <code class="type"></code>value</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VB"><span class="constructor">VB</span></span> <span class="keyword">of</span> <code class="type">bool</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VArr"><span class="constructor">VArr</span></span> <span class="keyword">of</span> <code class="type"><a href="Defs.html#TYPEvalue">value</a> array</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VUnit"><span class="constructor">VUnit</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VN"><span class="constructor">VN</span></span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VF"><span class="constructor">VF</span></span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VLam"><span class="constructor">VLam</span></span> <span class="keyword">of</span> <code class="type">(string list * <a href="Defs.html#TYPEexpr">expr</a>)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VStr"><span class="constructor">VStr</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VRecord"><span class="constructor">VRecord</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Defs.html#TYPEvalue">value</a>) list Pervasives.ref</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTvalue.VTop"><span class="constructor">VTop</span></span></code></td>
+
+</tr></table>
+
+<div class="info ">
+Types of values that are possible in Honey Badger.<br>
+</div>
+
+</body></html>

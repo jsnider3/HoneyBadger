@@ -1,0 +1,10 @@
+# Site settings
+title: Honey Badger
+email: jsnider3@masonlive.gmu.edu
+description: "A mildly interesting programming language named after a meme."
+baseurl: "/HoneyBadger"
+url: "http://jsnider3.github.io"
+
+# Build settings
+markdown: kramdown
+permalink: pretty
