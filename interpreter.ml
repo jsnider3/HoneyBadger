@@ -80,7 +80,7 @@ and string_of_val arg = match arg with
   |VB b -> string_of_bool b
   |VStr s -> s
   |VLam (b, c) -> "fun " ^ String.concat ~sep:", " b ^ ": " ^
-                        string_of_expr c ^ ")"
+                        string_of_expr c
   |VArr a -> "[" ^ String.concat ~sep:", " (List.map (Array.to_list a) string_of_val ) 
                        ^ "]"
   |VUnit -> "()"

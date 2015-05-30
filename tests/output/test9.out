@@ -1,1 +1,1 @@
-VLam(x, Lookup x)
+fun x: Lookup x
