@@ -37,14 +37,13 @@
       </a>
       <div class="trigger">
         
-          <a class="page-link" href="/HoneyBadger/about/">About</a>
-        
           <a class="page-link" href="/HoneyBadger/acknowledgements/">Acknowledgements</a>
         
           <a class="page-link" href="/HoneyBadger/feed.xml"></a>
         
           <a class="page-link" href="/HoneyBadger/"></a>
         
+        <a class="page-link" href="../../about">About</a>
       </div>
     </nav>
 
@@ -55,18 +54,278 @@
 
     <div class="page-content">
       <div class="wrap">
-      <div class="home">
+      <h1 id="introduction">1 Introduction</h1>
 
-    <a href="https://github.com/jsnider3/HoneyBadger">Reference Implementation</a>
-    
-    <a class="post-link" href="/HoneyBadger/docs/">Reference Documentation</a>
+<p>This manual describes the programming language Honey Badger.
+It is named Honey Badger as a reference to a
+<a href="https://www.youtube.com/watch?v=4r7wHMg5Yjg">youtube video</a> popular
+on the internet in the early 2010’s. It is a dynamically-scoped,
+dynamically-scoped, language with a reference implementation provided
+in OCaml.</p>
+
+<p>Honey Badger is a small language that could be implemented in an interpreted
+language quite straight-forwardly. It’s features were chosen without regard
+to practicality with the main goal of being different from other languages that
+the author has implemented and providing an avenue to prove his knowledge of 
+OCaml by using it for the reference implementation.</p>
+
+<p>A Honey Badger program is a single expression. This expression can contain
+loops, functions, branching, arrays, dictionaries, and is Turing-Complete.</p>
+
+<p>The default behavior of a program is to evaluate it and if evaluation 
+terminates print what it evaluates to.
+This manual is divided into informal and formal components. For a short,
+informal overview, the first part (through Section 9) suffices. The formal
+description begins with Section 10.  </p>
+
+<h1 id="getting-started">2 Getting Started</h1>
+
+<p>If you want to get started coding in Honey Badger you should download the
+<a href="https://github.com/jsnider3/HoneyBadger">reference implementation</a> which is
+documented <a href="/docs/">here</a> and at it’s github page. After resolving dependencies
+and making it you can run programs with <code>HB path/to/file.hnb</code>. Example programs
+can be found in the “tests/input” directory, with tictactoe.hnb being
+particularly informative.</p>
+
+<h1 id="expressions">3 Expressions</h1>
+
+<p>Expressions represent the entirety of Honey Badger syntax.</p>
+
+<h2 id="constants">3.1 Constants</h2>
+
+<p>The simplest expressions are constants. Boolean constants are <code>true</code> and
+<code>false</code>. Integer constants are made of the decimal digits without any other
+char. String constants are characters enclosed in double
+quotes, i.e. “Hello World!”</p>
+
+<h2 id="identifiers">3.2 Identifiers</h2>
+
+<p>The names of variables are expressions. Resolution is done by checking the
+current scope and if not present checking increasingly higher scopes.
+Evaluating an identifiers which does not have a binding in any higher scope
+will raise a <code>ValueException</code>.</p>
+
+<h2 id="assignment">3.3 Assignment</h2>
+
+<p>An assignment either has the form <code>id = expr</code>, <code>id[expr] = expr</code>, or
+<code>id[String] = expr</code>. The first form assigns to regular variables, the second
+to elements of an array, and the third to fields of a dictionary.</p>
+
+<h2 id="method-calls">3.4 Method calls</h2>
+
+<p>Method calls take the form of <code>&lt;expr&gt;(&lt;expr&gt;,...,&lt;expr&gt;)</code>. Let’s number these
+e0(e1,…en) To evaluate this expression, we evaluate e0, throw an error if
+it’s not a method or if it’s number of arguments does not equal n.
+The args are evaluated left-to-right, from e1 to en. Finally, the values from
+e1 to en are bound to the corresponding parameters names in a new scope and the
+function itself is evaluated.</p>
+
+<h2 id="conditionals">3.5 Conditionals</h2>
+
+<p>A conditional has the form
+<code>if &lt;expr&gt; then &lt;expr&gt; (else &lt;expr&gt;)</code></p>
+
+<p>To evaluate conditionals, the predicate is evaluated first.
+If the predicate is true, then the then branch is evaluated. If the predicate
+is false, then the else branch is evaluated. The value of the conditional is
+the value of the evaluated branch. If the else branch is not provided it is
+defined as <code>else Unit</code>.</p>
+
+<h2 id="loops">3.6 Loops</h2>
+
+<p>A loop has the form
+<code>while &lt;expr&gt; &lt;block&gt;</code></p>
+
+<p>The guard is evaluated before each iteration of the loop.
+If the guard is false, the loop terminates and returns Unit. 
+If it’s true, the body of the loop is evaluated and the process repeats.
+If it’s anything else, a <code>TypeException</code> is raised.</p>
+
+<p>There is also a for loop syntax of the form
+<code>for(e1; e2; e3) e4</code></p>
+
+<p>This is semantic sugar for {e1; while e2 {e4; e3}}.</p>
+
+<h2 id="blocks">3.7 Blocks</h2>
+
+<p>A block has the form
+<code>{ &lt;expr&gt;; ...; &lt;expr&gt; }</code></p>
+
+<p>The expressions are evaluated from first to last. Empty blocks are prohibited.
+Blocks evaluate to the last expression.
+Semi-colons in Honey Badger are used as seperators in the list of expressions
+not as terminators, unlike in C.</p>
+
+<h2 id="input-output">3.8 Input-Output</h2>
+
+<p>Honey Badger has the following built-in methods for performing simple input and
+output operations:
+print(x) : Unit
+readline() : String
+print casts its argument to a string, prints the result, and returns Unit. The
+method readline, waits for the user to type in a string followed by ‘\n’, and
+then returns the string without the newline.</p>
+
+<h2 id="methods">3.9 Methods</h2>
+
+<p>A method definition has the form
+<code>fun &lt;id, ... ,&lt;id&gt; : &lt;expr&gt;</code>.
+There may be zero or more parameters. The identifiers used in the parameter
+list must be distinct.</p>
+
+<h2 id="casts">3.10 Casts</h2>
+
+<p>Casts have the form <code>Type(expr)</code>. Casts from floats to ints are done by truncation.
+<code>true</code> cast to a number is equal to <code>1</code>, <code>false</code> cast to a number is equal to <code>0</code>.
+Non-zero numbers cast to Bool are <code>true</code>, zero is false.  Casting an expr e to Str
+produces a string that that would evaluate to e. Non-empty arrays and records
+cast to Bool are true, empty ones are false. All other casts generate a <code>TypeException</code>.</p>
+
+<h2 id="arithmetic-and-comparison-operations">3.11 Arithmetic and Comparison Operations</h2>
+
+<p>Honey Badger has eight binary operators: +, -, *, /, &gt;=, &gt;, &lt;, &lt;=. Used as
+<code>expr op expr</code>
+To evaluate such an expression first expr1 is evaluated and then expr2. The
+result of the operation is the result of the expression.
+The static types of the two sub-expressions must be Int. The static type of the
+expression is Int. Cool has only integer division.
+Cool has three comparison operations: &lt;, &lt;=, =. For &lt; and &lt;= the rules are
+exactly the same as for the binary arithmetic operations, except that the result
+is a Bool. The comparison is a special case. If either <expr1> or <expr2> has
+static type Int, Bool, or String, then the other must have the same static type.
+Any other types may be freely compared. On non-basic objects, equality simply
+checks for pointer equality (i.e., whether the memory addresses of the objects
+are the same). Equality is defined for void.
+In principle, there is nothing wrong with permitting equality tests between,
+for example, Bool and Int. However, such a test must always be false and almost
+certainly indicates some sort of programming error. The Cool type checking rules
+catch such errors at compile-time instead of waiting until runtime.
+Finally, there is one arithmetic and one logical unary operator. The expression
+~ <expr> is the integer complement of <expr>. The expression <expr> must have
+static type Int and the entire expression has static type Int. The expression
+not <expr> is the boolean complement of <expr>. The expression <expr> must have
+static type Bool and the entire expression has static type Bool.</expr></expr></expr></expr></expr></expr></expr2></expr1></p>
+
+<h2 id="array-and-dictionary-literals">3.12 Array and Dictionary Literals</h2>
+
+<p>Array literals are in the form of <code>[e1,...en]</code>. Dictionary literals are in the
+form of <code>{"f1" : e1, ... "fn" : en}</code> and prohibit duplicate fields. In both
+cases, evaluation proceeds left-to-right.</p>
+
+<h2 id="lookups">3.13 Lookups</h2>
+
+<p>The notation
+<code>expr '[' expr ']'</code> as in e[i]</p>
+
+<p>whether on the left or right hand side on an assignment refers to the ith member of
+the array e. The array is evaluated before the index. Array indexes start at 0. 
+If an array index evaluates to a float it is cast to an integer by truncation, if it
+evaluates to a non-number a <code>TypeException</code> is raised. Arrays may be of freely mixed
+types. Out-of-bounds errors on arrays generate <code>OutOfBoundsException</code>.</p>
+
+<p>The notation <code>expr '[' String ']'</code> as in dict[“Hi”] refers to the field “Hi” within the
+dictionary given by an expression. Evaluating a field not present in a dictionary will
+raise a <code>KeyException</code>.</p>
+
+<h2 id="throwing-exceptions">3.14 Throwing Exceptions</h2>
+
+<p>Exceptions can be thrown by language built-ins as described above or thrown
+manually with the forms <code>Except(expr)</code> and <code>Except(string, expr)</code>. The first
+type throws a <code>RuntimeException</code> with <code>expr</code> cast to a Str as its message. The
+second form throws an Exception of type specified by the given string with its
+message as the expr evaluated and cast to a Str.  </p>
+
+<p>If an <code>Exception</code> is thrown without being caught, then its message shall be
+print out by the interpreter.</p>
+
+<h2 id="catching-exceptions">3.15 Catching Exceptions</h2>
+
+<p>Exceptions can be caught by try-catch blocks. These have the form
+<code>try block (catch name : e)+</code>. try’s without catch blocks are forbidden.
+try’s where multiple catch blocks are provided for the same exception are also
+forbidden.</p>
+
+<h1 id="lexical-structure">4 Lexical Structure</h1>
+
+<p>The lexical units of Honey Badger are numbers, types, operators,
+strings, keywords, the various curlies anc brackets, and white space.</p>
+
+<h2 id="numbers-identifiers-and-special-notation">4.1 Numbers, Identifiers, and Special Notation</h2>
+
+<p>Integers are non-empty strings of digits 0-9. Floats are non-empty strings of
+digits 0-9 containing a single ‘.’ character. Identifiers are strings (other
+than keywords) starting with a lower case letter and consisting of letters, digits, and the underscore character.
+All types are currently keywords, but they all start with upper case letters
+for clarity.</p>
+
+<h2 id="strings">4.2 Strings</h2>
+
+<p>Strings are enclosed in double quotes “…” and are all literal strings.</p>
+
+<h2 id="comments">4.3 Comments</h2>
+
+<p>Honey Badger has one form of comment. Any string starting with “//” and ending
+with either a newline or EOF is a comment and ignored.</p>
+
+<h2 id="keywords">4.4 Keywords</h2>
+
+<p>The keywords of Honey Badger are: true, false, if, then, else, for, try, catch,
+fun, print, len, readline, Int, Bool, String, Float, Record, Top, Except, and
+Arr. Keywords are case sensitive.</p>
+
+<h2 id="white-space">4.5 White Space</h2>
+
+<p>White space consists of any sequence of the characters: ‘ ‘, ‘\n’, and ‘\t’.</p>
+
+<h1 id="semi-formal-syntax">5 Semi-formal Syntax</h1>
+
+<pre><code>program = expr
  
-  <p class="rss-subscribe">subscribe <a href="/HoneyBadger/feed.xml">via RSS</a></p>
+expr = ID | ID "[" expr "]" | ID "[" string "]" | ID "=" expr |
+       ID "[" expr "]" "=" expr | ID "[" string "]" "=" expr |
+       expr bin_op expr | un_op expr | "fun" (ID,*) "=" expr |
+       expr "(" (expr,*) ")" | "if" expr "then" expr "else" expr |
+       "if" expr "then" expr | "while" expr block | "[" (expr,)* "]" |
+       "{" (string ":" expr)* "}" | type "(" expr ")" | Except "(" expr ")" |
+       Except "(" charseq "," expr ")" | int | float | bool | "(" expr ")" |
+       "for" "(" expr ";" expr ";" expr ")" expr | "print" "(" expr ")" |
+       "readline" "(" ")" | "try" block ("catch" charseq ":" expr)+
+  
+block = "{" (expr ";")+ ")"
 
-</div>
+bool = "true" | "false"
+int = ['0'-'9']+
+float = ['0'-'9']* '.' ['0'-'9']+
+string = '"' charseq '"'
+
+type = "Int" | "Bool" | "String" | "Float"
+ID = ['a'-'z']['a'-'z' '0'-'9' 'A'-'Z' '_']*
+charseq = [^'"' ' ' '\n' '\t']* 
+  
+bin_op = "+"' | "-" | "/" | "*" | "&lt;" | "&lt;=" | "&gt;" | "&gt;="
+un_op = "~" | "not" | "-"
+</code></pre>
+
 
       </div>
     </div>
+  
+    
+<div id="disqus_thread" class="wrap"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'jsnider3';
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
 
     <footer class="site-footer">
 
