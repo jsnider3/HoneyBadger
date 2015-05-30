@@ -79,14 +79,14 @@ and string_of_val arg = match arg with
   |VF f -> Float.to_string f
   |VB b -> string_of_bool b
   |VStr s -> s
-  |VLam (b, c) -> "VLam(" ^ String.concat ~sep:", " b ^ ", " ^
+  |VLam (b, c) -> "fun " ^ String.concat ~sep:", " b ^ ": " ^
                         string_of_expr c ^ ")"
   |VArr a -> "[" ^ String.concat ~sep:", " (List.map (Array.to_list a) string_of_val ) 
                        ^ "]"
   |VUnit -> "()"
   |VTop -> "T"
   |VRecord fields -> "{" ^ String.concat ~sep:", " 
-                        (List.map !fields (fun field -> fst field ^ " = " ^ 
+                        (List.map !fields (fun field -> fst field ^ " : " ^ 
                           string_of_val (snd field))) ^ "}"
 
 (**
