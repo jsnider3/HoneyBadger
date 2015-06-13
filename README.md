@@ -1,4 +1,6 @@
 # Honey Badger
+[![Build Status](https://travis-ci.org/jsnider3/HoneyBadger.svg?branch=master)](https://travis-ci.org/jsnider3/HoneyBadger)
+
 A programming language developed by me and implemented in OCaml.
 
 Honey Badger is intended to be a dynamically-scope, dynamically-typed
