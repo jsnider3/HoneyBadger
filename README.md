@@ -1,5 +1,6 @@
 # Honey Badger
 [![Build Status](https://travis-ci.org/jsnider3/HoneyBadger.svg?branch=master)](https://travis-ci.org/jsnider3/HoneyBadger)
+[![License](https://img.shields.io/github/license/jsnider3/HoneyBadger.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 A programming language developed by me and implemented in OCaml.
 
