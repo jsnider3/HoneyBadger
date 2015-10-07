@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/github/license/jsnider3/HoneyBadger.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 A programming language developed by me and implemented in OCaml.
+The documentation is [here.](http://www.joshuasnider.com/HoneyBadger/)
 
 Honey Badger is intended to be a dynamically-scope, dynamically-typed
 language, with dictionaries and arrays as language builtins.
