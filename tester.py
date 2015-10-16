@@ -8,14 +8,15 @@ OUT = "tests/output/"
 class Tests(unittest.TestCase):
 
   def run_HB(self, fname):
-    proc = os.popen("./HB " + fname)
-    lines = proc.readlines()
-    proc.close()
+
+    lines = subprocess.check_output(["./HB", fname])
+    lines = lines.split('\n')[:-1]
     return lines
 
   def cat(self, fname):
     f = open(fname)
     lines = f.readlines()
+    lines = [line.rstrip('\n') for line in lines]
     f.close()
     return lines
 
