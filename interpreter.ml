@@ -3,6 +3,7 @@
 
 open Core.Std
 open Defs
+open Format
 open Printf
 
 (**
@@ -13,7 +14,7 @@ open Printf
 *)
 exception HBException of string * string
 
-let rec string_of_kind arg = match arg with
+let string_of_kind arg = match arg with
   TInt -> "Int"
   |TReal -> "Real"
   |TBool -> "Bool"
@@ -28,24 +29,24 @@ let rec string_of_kind arg = match arg with
 (** Return the abstract syntax tree rooted at arg represented
   as a string. *)
 let rec string_of_expr arg = match arg with
-  N a -> "N " ^ string_of_int a
-  |F f -> "F " ^ Float.to_string f
-  |B b -> "B " ^ string_of_bool b
-  |Str s -> "String " ^ s
+  N n -> sprintf "N %d" n
+  |F f -> sprintf "F %f" f
+  |B b -> sprintf "B %b" b
+  |Str s -> sprintf "String %s" s
   |Readline -> "readline()"
-  |Len e -> "len(" ^ string_of_expr e ^ ")"
-  |Print e -> "print(" ^ string_of_expr e ^ ")"
-  |Add (a, b) -> "Add(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |Mul (a, b) -> "Mul(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |Div (a, b) -> "Div(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |Sub (a, b) -> "Sub(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |Less (a, b) -> "Less(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |And (a, b) -> "And(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |Or (a, b) -> "Or(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |Not a -> "Not(" ^ string_of_expr a ^ ")"
-  |If (a, b, c)-> "(If " ^ string_of_expr a ^ " then " ^ string_of_expr b ^
-                       " else " ^ string_of_expr c ^ ")"
-  |Equal (a, b) -> "Equal(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
+  |Len e -> sprintf "len(%s)" (string_of_expr e)
+  |Print e -> sprintf "print(%s)" (string_of_expr e)
+  |Add (a, b) -> sprintf "Add(%s, %s)" (string_of_expr a) (string_of_expr b)
+  |Mul (a, b) -> sprintf "Mul(%s, %s)" (string_of_expr a) (string_of_expr b)
+  |Div (a, b) -> sprintf "Div(%s, %s)" (string_of_expr a) (string_of_expr b)
+  |Sub (a, b) -> sprintf "Sub(%s, %s)" (string_of_expr a) (string_of_expr b)
+  |Less (a, b) -> sprintf "Less(%s, %s)" (string_of_expr a) (string_of_expr b)
+  |And (a, b) -> sprintf "And(%s, %s)" (string_of_expr a) (string_of_expr b)
+  |Or (a, b) -> sprintf "Or(%s, %s)" (string_of_expr a) (string_of_expr b)
+  |Not a -> sprintf "Not(%s)" (string_of_expr a)
+  |If (a, b, c)-> sprintf "(If %s then %s else %s)" (string_of_expr a)
+                       (string_of_expr b) (string_of_expr c)
+  |Equal (a, b) -> sprintf "Equal(%s, %s)" (string_of_expr a) (string_of_expr b)
   |Lam (b, c) -> "Lam(" ^ String.concat ~sep:", " b ^ ", " ^
                       string_of_expr c ^ ")"
   |App (a, b) -> "App(" ^ string_of_expr a ^ ", " ^ 
@@ -54,14 +55,14 @@ let rec string_of_expr arg = match arg with
                 ^ "]"
   |Unit -> "()"
   |Top -> "T"
-  |Except (t, m) -> t  ^ ": " ^ string_of_expr m
-  |Get (a, b) -> "Get(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
-  |GetRec (a, b) -> "GetRec(" ^ a ^ "," ^ string_of_expr b ^ ")"
-  |SetRec (a, b, c) -> a ^ "[" ^ b ^ "] <- " ^ string_of_expr c 
+  |Except (t, m) -> sprintf "%s: %s" t (string_of_expr m)
+  |Get (a, b) -> sprintf "Get(%s, %s)" (string_of_expr a) (string_of_expr b)
+  |GetRec (a, b) -> sprintf "GetRec(%s, %s)" a (string_of_expr b)
+  |SetRec (a, b, c) -> sprintf "%s[%s] <- %s" a b (string_of_expr c)
   |SetInd (a, b, c) -> a ^ "[" ^ string_of_expr b ^ "] <- " ^ string_of_expr c 
   |Cast (a, b) -> "Cast(" ^ string_of_expr a ^ string_of_kind b
   |Lookup a -> "Lookup " ^ a
-  |While (a, b) -> "While(" ^ string_of_expr a ^ ", " ^ string_of_expr b ^ ")"
+  |While (a, b) -> sprintf "While(%s, %s)" (string_of_expr a) (string_of_expr b)
   |Record fields -> "Record[" ^ String.concat ~sep:", " 
                       (List.map fields (fun field -> fst field ^ " = " ^
                         string_of_expr (snd field))) ^ "]"
@@ -75,7 +76,7 @@ let rec string_of_expr arg = match arg with
   Represent a value as a human-readable string.
 *)
 and string_of_val arg = match arg with
-  VN a -> string_of_int a
+  VN n -> string_of_int n
   |VF f -> Float.to_string f
   |VB b -> string_of_bool b
   |VStr s -> s
@@ -230,7 +231,7 @@ let cast v t = match (t, v) with
     a value.
 *)
 let rec eval expr state = match expr with
-  N a -> VN a
+  N n -> VN n
   |F a -> VF a
   |B b -> VB b
   |Str s -> VStr s
@@ -325,8 +326,8 @@ let rec eval expr state = match expr with
   |SetInd (var, ind, expr) -> 
     begin
     match (eval (Lookup var) state, eval ind state) with
-      (VArr ls, VN a) -> Array.set ls a (eval expr state); VArr ls
-      |(VArr ls, VF a) -> Array.set ls (Float.to_int a) (eval expr state); VArr ls 
+      (VArr ls, VN n) -> Array.set ls n (eval expr state); VArr ls
+      |(VArr ls, VF f) -> Array.set ls (Float.to_int f) (eval expr state); VArr ls
       |(VArr ls, k) -> 
         type_exn ("Invalid array index " ^ string_of_val k)
       |(k, v) -> type_exn ("Index assignment to non array " ^ string_of_val k)
